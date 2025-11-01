@@ -256,7 +256,7 @@
                                         ->exists();
                                 @endphp
                                 @if($canCreate)
-                                    <a href="{{ route('tempat-wisata.create') }}" class="btn btn-primary">
+                                    <a href="{{ route('tempat-wisata.create') }}" class="btn btn-primary" style="background-color: #007bff; border-color: #007bff; color: #fff; font-weight: 600; padding: 12px 24px; box-shadow: 0 2px 4px rgba(0,123,255,0.3);">
                                         <i class="ti ti-plus me-2"></i>Tambah Tempat Wisata
                                     </a>
                                 @else

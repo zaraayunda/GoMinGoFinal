@@ -53,22 +53,33 @@ class EventController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'judul' => 'required|string|max:255',
+            'nama_event' => 'required|string|max:150',
             'deskripsi' => 'required|string',
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
+            'lokasi' => 'required|string|max:200',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
             'foto' => 'nullable|image|max:5120'
         ]);
 
-        $event = new Event($request->all());
-        $event->tempat_wisata_id = Auth::user()->tempatWisata->id;
+        $event = Event::create([
+            'nama_event' => $request->nama_event,
+            'deskripsi' => $request->deskripsi,
+            'tanggal_mulai' => $request->tanggal_mulai,
+            'tanggal_selesai' => $request->tanggal_selesai ?? null,
+            'lokasi' => $request->lokasi,
+            'latitude' => $request->latitude ?? null,
+            'longitude' => $request->longitude ?? null,
+            'status' => $request->status ?? 'upcoming',
+            'tempat_wisata_id' => Auth::user()->tempatWisata->id ?? null,
+        ]);
 
         if ($request->hasFile('foto')) {
             $path = $request->file('foto')->store('events', 'public');
             $event->foto = $path;
+            $event->save();
         }
-
-        $event->save();
 
         return redirect()->route('events.index')->with('success', 'Event berhasil ditambahkan');
     }
@@ -89,14 +100,17 @@ class EventController extends Controller
         }
 
         $request->validate([
-            'judul' => 'required|string|max:255',
+            'nama_event' => 'required|string|max:150',
             'deskripsi' => 'required|string',
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
+            'lokasi' => 'required|string|max:200',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
             'foto' => 'nullable|image|max:5120'
         ]);
 
-        $event->fill($request->except('foto'));
+        $event->fill($request->only(['nama_event', 'deskripsi', 'tanggal_mulai', 'tanggal_selesai', 'lokasi', 'latitude', 'longitude', 'status']));
 
         if ($request->hasFile('foto')) {
             $path = $request->file('foto')->store('events', 'public');

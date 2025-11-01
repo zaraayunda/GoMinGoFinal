@@ -8,7 +8,7 @@ class Event extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'judul',
+        'nama_event',
         'deskripsi',
         'tanggal_mulai',
         'tanggal_selesai',

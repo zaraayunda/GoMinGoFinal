@@ -148,6 +148,47 @@
     .text-center a:hover {
       text-decoration: underline;
     }
+
+    /* Error & Success Messages */
+    .alert {
+      padding: 12px 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .alert-error {
+      background: rgba(220, 53, 69, 0.9);
+      color: #fff;
+      border-left: 4px solid #dc3545;
+    }
+
+    .alert-success {
+      background: rgba(40, 167, 69, 0.9);
+      color: #fff;
+      border-left: 4px solid #28a745;
+    }
+
+    .error-message {
+      color: #ffd60a;
+      font-size: 12px;
+      margin-top: 5px;
+      display: block;
+    }
+
+    .form-group input.error {
+      border: 2px solid #dc3545;
+      background: rgba(220, 53, 69, 0.2);
+    }
+
+    .form-group input.error:focus {
+      border-color: #dc3545;
+      box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25);
+    }
   </style>
 </head>
 
@@ -166,16 +207,59 @@
 
     <div class="right">
       <h2>Login ke Akun Anda</h2>
+      
+      @if(session('success'))
+        <div class="alert alert-success">
+          <span>✓</span>
+          <span>{{ session('success') }}</span>
+        </div>
+      @endif
+
+      @if(session('error'))
+        <div class="alert alert-error">
+          <span>✕</span>
+          <span>{{ session('error') }}</span>
+        </div>
+      @endif
+
+      @if($errors->any())
+        <div class="alert alert-error">
+          <span>✕</span>
+          <span>Mohon perbaiki kesalahan berikut:</span>
+        </div>
+      @endif
+
       <form method="POST" action="{{ route('login') }}">
         @csrf
         <div class="form-group">
           <label for="email">Email Address</label>
-          <input type="email" id="email" name="email" placeholder="Masukkan email" required>
+          <input 
+            type="email" 
+            id="email" 
+            name="email" 
+            placeholder="Masukkan email" 
+            value="{{ old('email') }}"
+            class="{{ $errors->has('email') ? 'error' : '' }}"
+            required
+          >
+          @error('email')
+            <span class="error-message">{{ $message }}</span>
+          @enderror
         </div>
 
         <div class="form-group">
           <label for="password">Password</label>
-          <input type="password" id="password" name="password" placeholder="Masukkan password" required>
+          <input 
+            type="password" 
+            id="password" 
+            name="password" 
+            placeholder="Masukkan password" 
+            class="{{ $errors->has('password') ? 'error' : '' }}"
+            required
+          >
+          @error('password')
+            <span class="error-message">{{ $message }}</span>
+          @enderror
         </div>
 
         <button type="submit" class="btn-submit">Masuk</button>

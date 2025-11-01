@@ -27,7 +27,8 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/login', function () {
+    // Dashboard redirect untuk user yang sudah login
+    Route::get('/dashboard', function () {
         // Redirect berdasarkan role
         if (Auth::user()->role == 'tempat_wisata') {
             return redirect()->route('tempat-wisata.dashboard');
@@ -56,6 +57,14 @@ Route::middleware('auth')->group(function () {
     // ==========================
     Route::get('/tour-guide/dashboard', [\App\Http\Controllers\TourGuideController::class, 'dashboard'])->name('tour-guide.dashboard');
     Route::resource('tour-guide', \App\Http\Controllers\TourGuideController::class);
+    
+    // Tour Guide Events Routes
+    Route::prefix('tourguide/events')->name('tourguide.events.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\TourGuide\TourGuideEventController::class, 'index'])->name('index');
+        Route::get('/{id}', [\App\Http\Controllers\TourGuide\TourGuideEventController::class, 'show'])->name('show');
+        Route::post('/{id}/register', [\App\Http\Controllers\TourGuide\TourGuideEventController::class, 'register'])->name('register');
+    });
+    
 
     // ==========================
     // 👑 ADMIN ROUTES
@@ -105,10 +114,9 @@ Route::middleware('auth')->group(function () {
             Route::post('/{id}/send-invitation', [\App\Http\Controllers\Admin\AdminEventController::class, 'sendInvitation'])->name('send-invitation.store');
             Route::get('/{id}/participants', [\App\Http\Controllers\Admin\AdminEventController::class, 'participants'])->name('participants');
         });
-    Route::get('/tour-guide/dashboard', [TourGuideController::class, 'dashboard'])->name('tour-guide.dashboard');
-    Route::resource('tour-guide', TourGuideController::class);
+    });
 
-    // Tour Guide Schedule Routes
+    // Tour Guide Schedule Routes (untuk tour guide yang sudah login)
     Route::prefix('guide/schedules')->middleware('role:tour_guide')->group(function() {
         Route::get('/', [TourGuideScheduleController::class, 'index'])->name('guide.schedules.index');
         Route::post('/', [TourGuideScheduleController::class, 'store'])->name('guide.schedules.store');
@@ -126,18 +134,13 @@ Route::get('/detailwisata', function () {
 });
 // Public detail page for a tempat wisata (can be accessed from map popups)
 Route::get('/detailwisata/{id}', [TempatWisataController::class, 'publicShow'])->name('detailwisata.show');
-Route::get('/tourguide', [TourGuideController::class, 'publicIndex'])
-    ->name('tourguide.index');
-Route::get('/event', function () {
-    return view('user.event');
-});
-// Public Tour Guide detail (user-facing)
-Route::get('/tourguide/{id}', [TourGuideController::class, 'publicShow'])
-    ->name('tourguide.public');
+// Public Tour Guide listing (user-facing)
 Route::get('/tourguide', [TourGuideController::class, 'publicIndex'])->name('tourguide.index');
 Route::get('/tourguide/{id}', [TourGuideController::class, 'publicShow'])->name('tourguide.public');
+
+// Public Event listing (user-facing)
 Route::get('/event', [EventController::class, 'publicIndex'])->name('events.list');
-Route::get('/event/{event}', [EventController::class, 'publicShow'])->name('events.show');// ✅ <— tambahkan ini untuk menutup route event!
+Route::get('/event/{event}', [EventController::class, 'publicShow'])->name('events.show');
 
  
 // ==========================
@@ -148,46 +151,20 @@ Route::get('/ai', function () {
 })->name('ai.ask');
 
 Route::post('/ask-ai', [GeminiController::class, 'askAI'])->name('ai.chat');
-    // Tour Guide Routes
-    Route::prefix('tour-guide')->name('tour-guide.')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Admin\AdminTourGuideController::class, 'index'])->name('index');
-        Route::get('/{id}', [\App\Http\Controllers\Admin\AdminTourGuideController::class, 'show'])->name('show');
-        Route::post('/{id}/approve', [\App\Http\Controllers\Admin\AdminTourGuideController::class, 'approve'])->name('approve');
-        Route::post('/{id}/reject', [\App\Http\Controllers\Admin\AdminTourGuideController::class, 'reject'])->name('reject');
-        Route::delete('/{id}', [\App\Http\Controllers\Admin\AdminTourGuideController::class, 'destroy'])->name('destroy');
-    });
-
-    // Users Routes
-    Route::prefix('users')->name('users.')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Admin\AdminUserController::class, 'index'])->name('index');
-        Route::get('/{id}', [\App\Http\Controllers\Admin\AdminUserController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [\App\Http\Controllers\Admin\AdminUserController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [\App\Http\Controllers\Admin\AdminUserController::class, 'update'])->name('update');
-        Route::delete('/{id}', [\App\Http\Controllers\Admin\AdminUserController::class, 'destroy'])->name('destroy');
-        Route::post('/{id}/reset-password', [\App\Http\Controllers\Admin\AdminUserController::class, 'resetPassword'])->name('reset-password');
-    });
-
-    // Events Routes
-    Route::prefix('events')->name('events.')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Admin\AdminEventController::class, 'index'])->name('index');
-        Route::get('/create', [\App\Http\Controllers\Admin\AdminEventController::class, 'create'])->name('create');
-        Route::post('/', [\App\Http\Controllers\Admin\AdminEventController::class, 'store'])->name('store');
-        Route::get('/{id}', [\App\Http\Controllers\Admin\AdminEventController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [\App\Http\Controllers\Admin\AdminEventController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [\App\Http\Controllers\Admin\AdminEventController::class, 'update'])->name('update');
-        Route::delete('/{id}', [\App\Http\Controllers\Admin\AdminEventController::class, 'destroy'])->name('destroy');
-        Route::get('/{id}/send-invitation', [\App\Http\Controllers\Admin\AdminEventController::class, 'showSendInvitation'])->name('send-invitation');
-        Route::post('/{id}/send-invitation', [\App\Http\Controllers\Admin\AdminEventController::class, 'sendInvitation'])->name('send-invitation.store');
-        Route::get('/{id}/participants', [\App\Http\Controllers\Admin\AdminEventController::class, 'participants'])->name('participants');
-    });
-});
 
 Route::permanentRedirect('/detailevent', '/event');
 
 Route::middleware(['auth','role:tour_guide'])->group(function () {
+    // Route untuk kompatibilitas: redirect ke dashboard event
     Route::post(
         '/tour-guide/events/{event}/register',
-        [TGEventRegController::class, 'store']
+        [\App\Http\Controllers\TourGuide\EventRegistrationController::class, 'store']
+    )->name('tourguide.events.register.old');
+    
+    // Route untuk registrasi dari halaman public (redirect ke dashboard)
+    Route::post(
+        '/events/{event}/register',
+        [\App\Http\Controllers\TourGuide\EventRegistrationController::class, 'store']
     )->name('tourguide.events.register');
 });
 
@@ -230,9 +207,4 @@ Route::middleware(['auth','role:tour_guide'])->group(function () {
     Route::delete('/tour-guide/schedules/{schedule}',[TourGuideScheduleController::class,'destroy'])->name('guide.schedules.destroy');
 });
 
-// sementara, di web.php
-Route::middleware(['auth'])->group(function () {
-  Route::get('/tour-guide/schedules',[TourGuideScheduleController::class,'index'])->name('guide.schedules.index');
-  // ...
-});
 

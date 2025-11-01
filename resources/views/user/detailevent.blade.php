@@ -123,31 +123,17 @@
                         </div>
                     </div>
 
-                    {{-- CTA daftar (hanya untuk TG login) + tombol kembali --}}
+                    {{-- CTA untuk tour guide: redirect ke dashboard --}}
                     <div class="text-center mt-4 mb-5">
                         @auth
                             @if (auth()->user()->role === 'tour_guide')
-                                @php
-                                    $tg = auth()->user()->tourGuide ?? null;
-                                    $already = $tg
-                                        ? \App\Models\EventRegistration::where('event_id', $event->id)
-                                            ->where('tour_guide_id', $tg->id)
-                                            ->exists()
-                                        : false;
-                                @endphp
-                                @if ($already)
-                                    <button class="btn btn-secondary px-4 py-2 rounded-pill" disabled>
-                                        <i class="bi bi-check2-circle me-1"></i> Sudah Mendaftar
-                                    </button>
-                                @else
-                                    <form method="POST" action="{{ route('tourguide.events.register', $event) }}"
-                                        class="d-inline">
-                                        @csrf
-                                        <button class="btn btn-primary px-4 py-2 rounded-pill shadow-sm">
-                                            <i class="bi bi-person-plus me-1"></i> Daftar Event
-                                        </button>
-                                    </form>
-                                @endif
+                                <div class="alert alert-info d-inline-block mb-3">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    <strong>Tour Guide?</strong> Kelola event dan pendaftaran Anda di 
+                                    <a href="{{ route('tourguide.events.index') }}" class="alert-link fw-semibold">
+                                        Dashboard Event <i class="bi bi-arrow-right"></i>
+                                    </a>
+                                </div>
                             @endif
                         @endauth
 
@@ -158,7 +144,7 @@
                         @endguest
 
                         <a href="{{ route('events.list') }}"
-                            class="btn btn-outline-secondary px-4 py-2 rounded-pill shadow-sm ms-2">
+                            class="btn btn-outline-secondary px-4 py-2 rounded-pill shadow-sm {{ auth()->check() && auth()->user()->role === 'tour_guide' ? '' : 'ms-2' }}">
                             <i class="bi bi-arrow-left me-1"></i> Kembali
                         </a>
                     </div>

@@ -331,7 +331,9 @@ class TempatWisataController extends Controller
         $qstr = trim((string) $r->query('q', ''));
         $allowed = ['alam', 'kuliner', 'budaya'];
 
-        $q = TempatWisata::with('photos');
+        // Hanya ambil tempat wisata yang sudah approved/aktif (public)
+        // Menerima berbagai variasi status yang mungkin ada dari database import
+        $q = TempatWisata::with('photos')->whereIn('status', ['approved', 'aktif', 'active', 'published', 'publish']);
 
         if (in_array($kat, $allowed, true)) {
             $q->where('kategori', $kat);
@@ -380,7 +382,7 @@ class TempatWisataController extends Controller
 
     // URL foto publik
     $photos = $tempat->photos
-        ->map(fn($p) => $p->file_path ? \Storage::url($p->file_path) : null)
+        ->map(fn($p) => $p->file_path ? Storage::url($p->file_path) : null)
         ->filter()
         ->values()
         ->toArray();
