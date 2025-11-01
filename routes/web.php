@@ -7,7 +7,7 @@ use App\Http\Controllers\TempatWisataController;
 use App\Http\Controllers\TourGuideController;
 
 Route::get('/', function () {
-    return view('layout.main');
+    return view('welcome');
 });
 
 // ==========================

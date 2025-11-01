@@ -115,7 +115,7 @@
             <div class="col-lg-12">
               <nav class="navbar navbar-expand-lg">
                 <a class="navbar-brand" href="{{ url('/') }}">
-                  <img src="{{ asset('assets/img/logo/logogo.png') }}" alt="Logo" width="120" height="120"/>
+                  <img src="{{ asset('assets/img/logo/logogo.png') }}" alt="Logo" width="50" height="50"/>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                   data-bs-target="#navbarSupportedContent6" aria-controls="navbarSupportedContent6"
