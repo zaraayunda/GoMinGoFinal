@@ -9,6 +9,11 @@ use App\Models\TourGuide;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Models\EventInvitation;
+use App\Models\EventRegistration;
+use Illuminate\Support\Facades\DB;
+
+
 
 class AdminEventController extends Controller
 {
@@ -35,10 +40,10 @@ class AdminEventController extends Controller
         // Search
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('nama_event', 'like', "%{$search}%")
-                  ->orWhere('lokasi', 'like', "%{$search}%")
-                  ->orWhere('deskripsi', 'like', "%{$search}%");
+                    ->orWhere('lokasi', 'like', "%{$search}%")
+                    ->orWhere('deskripsi', 'like', "%{$search}%");
             });
         }
 
@@ -113,7 +118,7 @@ class AdminEventController extends Controller
             foreach ($request->file('photos') as $index => $photo) {
                 $filename = time() . '_' . Str::random(10) . '.' . $photo->getClientOriginalExtension();
                 $path = $photo->storeAs('events/photos', $filename, 'public');
-                
+
                 Photo::create([
                     'event_id' => $event->id,
                     'file_path' => $path,
@@ -132,12 +137,13 @@ class AdminEventController extends Controller
     public function show($id)
     {
         $event = Event::with(['photos'])->findOrFail($id);
-        
-        // Count registrations (akan digunakan setelah migration dibuat)
-        $registrationsCount = 0; // Placeholder
+
+        // ⬇️ dari 0 jadi count real
+        $registrationsCount = $event->registrations()->count();
 
         return view('admin.events.show', compact('event', 'registrationsCount'));
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -187,7 +193,7 @@ class AdminEventController extends Controller
             if ($event->foto) {
                 Storage::disk('public')->delete($event->foto);
             }
-            
+
             $file = $request->file('foto');
             $filename = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
             $fotoPath = $file->storeAs('events/foto', $filename, 'public');
@@ -201,7 +207,7 @@ class AdminEventController extends Controller
             foreach ($request->file('photos') as $index => $photo) {
                 $filename = time() . '_' . Str::random(10) . '.' . $photo->getClientOriginalExtension();
                 $path = $photo->storeAs('events/photos', $filename, 'public');
-                
+
                 Photo::create([
                     'event_id' => $event->id,
                     'file_path' => $path,
@@ -244,10 +250,19 @@ class AdminEventController extends Controller
     public function showSendInvitation($id)
     {
         $event = Event::findOrFail($id);
-        $tourGuides = TourGuide::where('status', 'approved')->with('user')->get();
+
+        $alreadyInvited = \App\Models\EventInvitation::where('event_id', $event->id)
+            ->pluck('tour_guide_id');
+
+        $tourGuides = TourGuide::where('status', 'approved')
+            ->whereNotIn('id', $alreadyInvited) // hapus baris ini kalau mau bisa kirim ulang
+            ->with('user')
+            ->orderBy('nama')
+            ->get();
 
         return view('admin.events.send-invitation', compact('event', 'tourGuides'));
     }
+
 
     /**
      * Send invitation to tour guides
@@ -255,32 +270,63 @@ class AdminEventController extends Controller
     public function sendInvitation(Request $request, $id)
     {
         $event = Event::findOrFail($id);
-        
-        $request->validate([
-            'tour_guide_ids' => 'required|array',
-            'tour_guide_ids.*' => 'exists:tour_guides,id',
-        ]);
 
-        // Logic untuk kirim undangan akan diimplementasikan nanti
-        // Untuk sekarang hanya simpan data
-        
-        $count = count($request->tour_guide_ids);
-        
+        // Support 2 mode: pilih semua approved ATAU checklist manual
+        $ids = $request->boolean('select_all_approved')
+            ? TourGuide::where('status', 'approved')->pluck('id')->all()
+            : ($request->input('tour_guide_ids', []));
+
+        if (empty($ids)) {
+            return back()->with('error', 'Pilih setidaknya satu tour guide.');
+        }
+
+        DB::transaction(function () use ($ids, $event) {
+            $now = now();
+            foreach ($ids as $tgId) {
+                EventInvitation::updateOrCreate(
+                    ['event_id' => $event->id, 'tour_guide_id' => $tgId], // unique key
+                    ['sent_at' => $now]
+                );
+            }
+        });
+
+        // (Opsional) dispatch email/notifikasi di sini
+
         return redirect()->route('admin.events.show', $event)
-            ->with('success', "Undangan berhasil dikirim ke {$count} tour guide!");
+            ->with('success', 'Undangan berhasil dikirim ke ' . count($ids) . ' tour guide!');
     }
+
 
     /**
      * Show participants list
      */
     public function participants($id)
     {
-        $event = Event::findOrFail($id);
-        
-        // Placeholder - akan diimplementasikan setelah migration event_registrations dibuat
-        $participants = collect([]);
+        $event = \App\Models\Event::findOrFail($id);
+        $participants = \App\Models\EventRegistration::with(['tourGuide'])
+            ->where('event_id', $event->id)
+            ->latest()
+            ->get();
 
         return view('admin.events.participants', compact('event', 'participants'));
     }
-}
 
+
+    public function approveParticipant(Event $event, EventRegistration $registration)
+    {
+        abort_unless($registration->event_id === $event->id, 404);
+        $registration->update(['status' => 'approved']);
+        EventInvitation::updateOrCreate(
+            ['event_id' => $event->id, 'tour_guide_id' => $registration->tour_guide_id],
+            ['sent_at' => $registration->created_at ?? now()]
+        );
+        return back()->with('success', 'Pendaftar disetujui.');
+    }
+
+    public function rejectParticipant(Event $event, EventRegistration $registration)
+    {
+        abort_unless($registration->event_id === $event->id, 404);
+        $registration->update(['status' => 'rejected']);
+        return back()->with('success', 'Pendaftar ditolak.');
+    }
+}

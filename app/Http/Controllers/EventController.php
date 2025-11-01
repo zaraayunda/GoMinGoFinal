@@ -5,13 +5,38 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use App\Models\EventRegistration;
 
 class EventController extends Controller
 {
+
+    
+    public function publicIndex()
+    {
+        $events = Event::query()
+            ->latest()
+            ->paginate(9);
+
+        return view('user.event', compact('events'));
+    }
+
+    public function publicShow(Event $event)
+    {
+        // Ambil hanya pendaftar berstatus approved
+        $participants = EventRegistration::with(['tourGuide.user'])
+            ->where('event_id', $event->id)
+            ->where('status', 'approved')   // atau ->approved() kalo pake scope
+            ->latest()
+            ->get();
+
+        return view('user.detailevent', compact('event','participants'));
+    }
     public function index()
     {
         $events = Event::query()
-            ->when(Auth::user()->role === 'tempat_wisata', function($q) {
+            ->when(Auth::user()->role === 'tempat_wisata', function ($q) {
                 return $q->where('tempat_wisata_id', Auth::user()->tempatWisata->id);
             })
             ->latest()
