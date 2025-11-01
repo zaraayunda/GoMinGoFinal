@@ -29,6 +29,9 @@ Route::middleware('auth')->group(function () {
         if (Auth::user()->role == 'tour_guide') {
             return redirect()->route('tour-guide.dashboard');
         }
+        if (Auth::user()->role == 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
         return view('layout.dashboard');
     })->name('dashboard');
 
@@ -42,25 +45,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('tempat-wisata/photo/{photo}', [TempatWisataController::class, 'deletePhoto'])
         ->name('tempat-wisata.photo.delete');
 
-    // ==========================
-    // 🧭 TOUR GUIDE ROUTES
-    // ==========================
-    Route::get('/tour-guide/dashboard', [TourGuideController::class, 'dashboard'])->name('tour-guide.dashboard');
-    Route::resource('tour-guide', TourGuideController::class);
-});
-
-// ==========================
-// 🌍 USER-FACING PAGES
-// ==========================
-Route::get('/peta', [TempatWisataController::class, 'showMap']);
-Route::get('/detailwisata', function () {
-    return view('user.detailwisata');
-});
-// Public detail page for a tempat wisata (can be accessed from map popups)
-Route::get('/detailwisata/{id}', [TempatWisataController::class, 'publicShow'])->name('detailwisata.show');
-Route::get('/tourguide', function () {
-    return view('user.tourguide');
-});
-Route::get('/event', function () {
-    return view('user.event');
+    // Tour Guide Routes
+    Route::get('/tour-guide/dashboard', [\App\Http\Controllers\TourGuideController::class, 'dashboard'])->name('tour-guide.dashboard');
+    Route::resource('tour-guide', \App\Http\Controllers\TourGuideController::class);
 });

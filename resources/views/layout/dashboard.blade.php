@@ -19,7 +19,7 @@
             <!-- Sidebar scroll-->
             <div>
                 <div class="brand-logo d-flex align-items-center justify-content-between">
-                    <a href="{{ route('tempat-wisata.dashboard') }}" class="text-nowrap logo-img">
+                    <a href="@if(Auth::user()->role == 'admin'){{ route('admin.dashboard') }}@elseif(Auth::user()->role == 'tour_guide'){{ route('tour-guide.dashboard') }}@else{{ route('tempat-wisata.dashboard') }}@endif" class="text-nowrap logo-img">
                         <img src="{{ asset('assetsdashboard/images/logos/dark-logo.svg') }}" width="180"
                             alt="" />
                     </a>
@@ -108,7 +108,8 @@
                             </li>
                         @endif
                         @endif
-                    </ul> </nav>
+                    </ul>
+                </nav>
                 <!-- End Sidebar navigation -->
             </div>
             <!-- End Sidebar scroll-->
