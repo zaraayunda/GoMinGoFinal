@@ -51,6 +51,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/tour-guide/dashboard', [\App\Http\Controllers\TourGuideController::class, 'dashboard'])->name('tour-guide.dashboard');
     Route::resource('tour-guide', \App\Http\Controllers\TourGuideController::class);
 
+// ==========================
+// 🌍 USER-FACING PAGES
+// ==========================
+Route::get('/peta', [TempatWisataController::class, 'showMap']);
+Route::get('/detailwisata', function () {
+    return view('user.detailwisata');
+});
+// Public detail page for a tempat wisata (can be accessed from map popups)
+Route::get('/detailwisata/{id}', [TempatWisataController::class, 'publicShow'])->name('detailwisata.show');
+Route::get('/tourguide', [TourGuideController::class, 'publicIndex'])
+    ->name('tourguide.index'); 
+Route::get('/event', function () {
+    return view('user.event');
     // ==========================
     // 👑 ADMIN ROUTES
     // ==========================
@@ -101,3 +114,9 @@ Route::middleware('auth')->group(function () {
         });
     });
 });
+
+// Public Tour Guide detail (user-facing)
+
+Route::get('/tourguide/{id}', [TourGuideController::class, 'publicShow'])
+    ->name('tourguide.public');
+

@@ -345,4 +345,67 @@ class TourGuideController extends Controller
         return redirect()->route('tour-guide.index')
             ->with('success', 'Profil tour guide berhasil dihapus!');
     }
+
+public function publicShow($id)
+{
+    $guide = TourGuide::with('detailTourGuides')->findOrFail($id);
+
+    // Foto -> URL publik
+    $foto = $guide->foto ?? null;
+    if ($foto && !preg_match('#^https?://#i', $foto)) {
+        $foto = Storage::url($foto);
+    }
+    $guide->foto_url = $foto ?: asset('assets/img/tourguide/default.png');
+
+    // Format WA
+    $hp = preg_replace('/\D+/', '', (string)($guide->kontak ?? ''));
+    if ($hp && substr($hp,0,1) === '0') $hp = '62'.substr($hp,1);
+    $guide->wa_link = $hp ? "https://wa.me/{$hp}" : null;
+
+    // Ambil ringkasan detail (bahasa, sertifikat) kalau tabel detail_tour_guides ada
+    $bahasa    = optional($guide->detailTourGuides)->pluck('bahasa')->filter()->unique()->values();
+    $sertifikat= optional($guide->detailTourGuides)->pluck('sertifikat_nama')->filter()->unique()->values();
+
+    return view('user.tourguide-detail', [
+        'guide'      => $guide,
+        'bahasa'     => $bahasa,
+        'sertifikat' => $sertifikat,
+    ]);
+}
+
+
+public function publicIndex(\Illuminate\Http\Request $r)
+{
+    $q   = trim((string)$r->query('q', ''));                   // pencarian nama
+    $sp  = strtolower((string)$r->query('spesialisasi', '')); // alam|kuliner|budaya|''
+
+    $guides = TourGuide::query()
+        ->whereIn('status', ['approved','aktif','active'])
+        ->when($q, fn($x)=>$x->where('nama','like',"%{$q}%"))
+        ->when(in_array($sp, ['alam','kuliner','budaya']), 
+               fn($x)=>$x->where('spesialisasi',$sp))
+        ->latest()
+        ->paginate(12)     // pagination
+        ->withQueryString();
+
+    // map foto & wa
+    $guides->getCollection()->transform(function($g){
+        $foto = $g->foto ?? null;
+        if ($foto && !preg_match('#^https?://#i', $foto)) $foto = Storage::url($foto);
+        $g->foto_url = $foto ?: asset('assets/img/tourguide/default.png');
+
+        $hp = preg_replace('/\D+/', '', (string)($g->kontak ?? ''));
+        if ($hp && $hp[0]==='0') $hp = '62'.substr($hp,1);
+        $g->wa_link = $hp ? "https://wa.me/{$hp}" : null;
+        return $g;
+    });
+
+    return view('user.tourguide', [
+        'guides' => $guides,
+        'sp'     => $sp,
+        'q'      => $q,
+    ]);
+}
+
+
 }
