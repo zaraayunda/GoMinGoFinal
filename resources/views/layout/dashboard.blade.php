@@ -7,6 +7,7 @@
     <title>GoMinGo - Dashboard</title>
     <link rel="shortcut icon" type="image/png" href="{{ asset('assetsdashboard/images/logos/favicon.png') }}" />
     <link rel="stylesheet" href="{{ asset('assetsdashboard/css/styles.min.css') }}" />
+    @stack('styles')
 </head>
 
 <body>
@@ -180,6 +181,7 @@
     <script src="{{ asset('assetsdashboard/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
     <script src="{{ asset('assetsdashboard/libs/simplebar/dist/simplebar.js') }}"></script>
     <script src="{{ asset('assetsdashboard/js/dashboard.js') }}"></script>
+    @stack('scripts')
 </body>
 
 </html>

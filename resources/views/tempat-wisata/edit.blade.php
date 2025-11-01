@@ -1,5 +1,84 @@
 @extends('layout.dashboard')
 
+@push('styles')
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet.fullscreen@2.4.0/Control.FullScreen.css"/>
+<style>
+    #map {
+        height: 450px;
+        border-radius: 16px;
+        box-shadow: 0 12px 32px rgba(12, 39, 77, .12);
+        background: #f8fafc;
+        border: 2px solid #fff;
+    }
+    .leaflet-touch .leaflet-control-layers, 
+    .leaflet-touch .leaflet-bar {
+        border: none;
+        box-shadow: 0 4px 12px rgba(0,0,0,.08);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    .leaflet-bar a {
+        background: rgba(255,255,255,.9) !important;
+        color: #374151 !important;
+        border-bottom: 1px solid #f3f4f6 !important;
+        width: 40px !important;
+        height: 40px !important;
+        line-height: 40px !important;
+        backdrop-filter: blur(8px);
+    }
+    .leaflet-bar a:hover {
+        background: #fff !important;
+        color: #2563eb !important;
+    }
+    .leaflet-control-fullscreen {
+        border: none !important;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    .leaflet-touch .leaflet-control-fullscreen a {
+        background: rgba(255,255,255,.9) !important;
+        backdrop-filter: blur(8px);
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+    }
+    .leaflet-control-fullscreen a:hover {
+        background: #fff !important;
+        color: #2563eb !important;
+    }
+    /* Style for zoom controls */
+    .leaflet-control-zoom {
+        border: none !important;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    .leaflet-touch .leaflet-control-zoom-in,
+    .leaflet-touch .leaflet-control-zoom-out {
+        width: 40px !important;
+        height: 40px !important;
+        line-height: 40px !important;
+        font-size: 18px !important;
+    }
+    .map-coordinate-display {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        background: rgba(255,255,255,.9);
+        padding: 6px 12px;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0,0,0,.1);
+        z-index: 1000;
+        font-size: 13px;
+        backdrop-filter: blur(4px);
+    }
+    .fullscreen #map {
+        height: 100vh;
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="container-fluid">
     <div class="row">
@@ -71,31 +150,34 @@
                                     @enderror
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label for="latitude" class="form-label">Latitude</label>
-                                            <input type="number" step="any" class="form-control @error('latitude') is-invalid @enderror" 
-                                                   id="latitude" name="latitude" 
-                                                   value="{{ old('latitude', $tempatWisata->latitude) }}" placeholder="-7.7956">
-                                            <small class="text-muted">Contoh: -7.7956</small>
-                                            @error('latitude')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
+                                <div class="mb-3">
+                                    <label class="form-label">Pilih Lokasi di Peta <span class="text-danger">*</span></label>
+                                    <div id="map" style="height: 400px; width: 100%; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 1rem;"></div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="latitude" class="form-label">Latitude</label>
+                                                <input type="number" step="any" class="form-control @error('latitude') is-invalid @enderror" 
+                                                       id="latitude" name="latitude" 
+                                                       value="{{ old('latitude', $tempatWisata->latitude) }}" required>
+                                                @error('latitude')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="longitude" class="form-label">Longitude</label>
+                                                <input type="number" step="any" class="form-control @error('longitude') is-invalid @enderror" 
+                                                       id="longitude" name="longitude" 
+                                                       value="{{ old('longitude', $tempatWisata->longitude) }}" required>
+                                                @error('longitude')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label for="longitude" class="form-label">Longitude</label>
-                                            <input type="number" step="any" class="form-control @error('longitude') is-invalid @enderror" 
-                                                   id="longitude" name="longitude" 
-                                                   value="{{ old('longitude', $tempatWisata->longitude) }}" placeholder="110.3695">
-                                            <small class="text-muted">Contoh: 110.3695</small>
-                                            @error('longitude')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
+                                    <small class="text-muted">Klik pada peta untuk memilih lokasi atau isi koordinat secara manual. Marker dapat digeser untuk menyesuaikan posisi.</small>
                                 </div>
 
                                 <div class="row">
@@ -413,3 +495,90 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endsection
+
+@push('scripts')
+<!-- Leaflet JavaScript -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.fullscreen@2.4.0/Control.FullScreen.min.js"></script>
+<script>
+function initMap() {
+    // Initialize map centered on Indonesia or existing location
+    const initialLat = document.getElementById('latitude').value || -2.5489;
+    const initialLng = document.getElementById('longitude').value || 118.0149;
+    const initialZoom = document.getElementById('latitude').value ? 13 : 5;
+    
+    var map = L.map('map', {
+        center: [initialLat, initialLng],
+        zoom: initialZoom,
+        fullscreenControl: true,
+        fullscreenControlOptions: {
+            position: 'topleft',
+            title: 'Tampilkan Peta Penuh',
+            titleCancel: 'Keluar dari Peta Penuh'
+        }
+    });
+    
+    // Add OpenStreetMap tiles with better styling
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    }).addTo(map);
+
+    // Add scale control with metric
+    L.control.scale({
+        maxWidth: 200,
+        metric: true,
+        imperial: false,
+        position: 'bottomright'
+    }).addTo(map);
+    
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    var marker;
+
+    // If coordinates exist, add marker
+    if (initialLat && initialLng) {
+        marker = L.marker([initialLat, initialLng], {draggable: true}).addTo(map);
+    }
+
+    // Handle map clicks
+    map.on('click', function(e) {
+        const lat = e.latlng.lat.toFixed(6);
+        const lng = e.latlng.lng.toFixed(6);
+        
+        // Update inputs
+        document.getElementById('latitude').value = lat;
+        document.getElementById('longitude').value = lng;
+
+        // Update or add marker
+        if (marker) {
+            marker.setLatLng(e.latlng);
+        } else {
+            marker = L.marker(e.latlng, {draggable: true}).addTo(map);
+        }
+    });
+
+    // Handle marker drag events if marker exists
+    if (marker) {
+        marker.on('dragend', function(e) {
+            const position = marker.getLatLng();
+            document.getElementById('latitude').value = position.lat.toFixed(6);
+            document.getElementById('longitude').value = position.lng.toFixed(6);
+        });
+    }
+
+    // Force a map invalidate size after initialization
+    setTimeout(function() {
+        map.invalidateSize();
+    }, 100);
+}
+
+// Initialize map when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    initMap();
+});
+</script>
+@endpush

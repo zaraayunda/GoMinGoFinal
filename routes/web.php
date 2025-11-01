@@ -52,12 +52,12 @@ Route::middleware('auth')->group(function () {
 // ==========================
 // 🌍 USER-FACING PAGES
 // ==========================
-Route::get('/peta', function () {
-    return view('user.peta');
-});
+Route::get('/peta', [TempatWisataController::class, 'showMap']);
 Route::get('/detailwisata', function () {
     return view('user.detailwisata');
 });
+// Public detail page for a tempat wisata (can be accessed from map popups)
+Route::get('/detailwisata/{id}', [TempatWisataController::class, 'publicShow'])->name('detailwisata.show');
 Route::get('/tourguide', function () {
     return view('user.tourguide');
 });

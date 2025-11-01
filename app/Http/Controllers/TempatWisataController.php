@@ -319,4 +319,48 @@ class TempatWisataController extends Controller
 
         return back()->with('success', 'Foto berhasil dihapus!');
     }
+
+    /**
+     * Display map with all tourist spots
+     */
+    public function showMap()
+    {
+        // Provide an array of plain objects (with first photo URL) so the view/JS can consume easily
+        $tempatWisatas = TempatWisata::with('photos')->get()->map(function ($t) {
+            // If a photo exists, create a public URL (storage disk "public")
+            $fotoUrl = null;
+            if ($t->photos && $t->photos->count()) {
+                $fotoUrl = $t->photos->first()->file_path ? Storage::url($t->photos->first()->file_path) : null;
+            }
+
+            return [
+                'id' => $t->id,
+                'nama_tempat' => $t->nama_tempat,
+                'alamat' => $t->alamat,
+                'latitude' => $t->latitude,
+                'longitude' => $t->longitude,
+                'kategori' => $t->kategori,
+                'tiket_masuk' => $t->tiket_masuk,
+                'jam_buka' => $t->jam_buka,
+                'foto' => $fotoUrl,
+            ];
+        })->toArray();
+
+        return view('user.peta', compact('tempatWisatas'));
+    }
+
+    /**
+     * Public detail page for a tourist spot (accessible from map)
+     */
+    public function publicShow($id)
+    {
+        $tempat = TempatWisata::with(['photos', 'reviews', 'user'])->findOrFail($id);
+
+        // Map photos to public URLs if present
+        $photos = $tempat->photos->map(function ($p) {
+            return $p->file_path ? Storage::url($p->file_path) : null;
+        })->filter()->values()->toArray();
+
+        return view('user.detailwisata', compact('tempat', 'photos'));
+    }
 }

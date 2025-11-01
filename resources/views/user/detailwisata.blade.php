@@ -16,6 +16,24 @@
     <link rel="stylesheet" href="{{ asset('assets/css/animate.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/lindy-uikit.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/custom.css') }}" />
+    <style>
+        /* Make detail page photos landscape rectangular and uniform */
+        .wisata-photo-gallery img,
+        .carousel-item img {
+            width: 100%;
+            height: 280px; /* landscape ratio height for desktop */
+            object-fit: cover; /* crop while keeping aspect */
+            border-radius: 8px;
+        }
+
+        /* Smaller height on narrow screens */
+        @media (max-width: 768px) {
+            .wisata-photo-gallery img,
+            .carousel-item img {
+                height: 200px; /* landscape ratio height for mobile */
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -106,38 +124,42 @@
             <!-- Detail Wisata -->
             <div class="wisata-detail-card p-4 rounded-4 shadow-sm border mb-5">
 
-                <!-- FOTO-FOTO WISATA -->
-                <div class="wisata-photo-gallery d-flex flex-wrap justify-content-center gap-3 mb-4">
-                    <img src="{{ asset('assets/img/wisata/foto1.jpg') }}" alt="Foto 1" class="foto-wisata">
-                    <img src="{{ asset('assets/img/wisata/foto2.jpg') }}" alt="Foto 2" class="foto-wisata">
-                    <img src="{{ asset('assets/img/wisata/foto3.jpg') }}" alt="Foto 3" class="foto-wisata">
-                    <img src="{{ asset('assets/img/wisata/foto4.jpg') }}" alt="Foto 4" class="foto-wisata">
-                    <img src="{{ asset('assets/img/wisata/foto5.jpg') }}" alt="Foto 5" class="foto-wisata">
+                <!-- FOTO-FOTO WISATA (tampilkan semua sekaligus dalam grid) -->
+                <div class="wisata-photo-gallery mb-4">
+                    @if(!empty($photos) && count($photos))
+                        <div class="row g-3">
+                            @foreach($photos as $i => $photo)
+                                <div class="col-12 col-md-6">
+                                    <img src="{{ $photo }}" alt="Foto {{ $i + 1 }} - {{ $tempat->nama_tempat }}" class="img-fluid detail-photo rounded-3" loading="lazy">
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="bg-light p-5 text-center rounded-3">Tidak ada foto tersedia</div>
+                    @endif
                 </div>
 
                 <!-- DETAIL INFORMASI -->
                 <div class="detail-wisata mt-4">
                     <h4 class="mb-3 text-primary border-bottom pb-2">Detail Tempat Wisata</h4>
                     <div class="row">
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-12 mb-3">
                             <label for="namawisata" class="form-label fw-semibold">Nama Tempat</label>
-                            <input type="text" id="namawisata" class="form-control border border-2 rounded-3"
-                                readonly>
+                            <input type="text" id="namawisata" class="form-control border border-2 rounded-3" value="{{ $tempat->nama_tempat }}" readonly>
                         </div>
 
                         <div class="col-md-12 mb-3">
                             <label for="deskripsi" class="form-label fw-semibold">Deskripsi</label>
-                            <textarea id="deskripsi" class="form-control border border-2 rounded-3" rows="3" readonly></textarea>
+                            <div class="form-control border border-2 rounded-3" style="min-height:120px">{!! nl2br(e($tempat->deskripsi)) !!}</div>
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label for="harga" class="form-label fw-semibold">Harga Tiket</label>
-                            <input type="text" id="harga" class="form-control border border-2 rounded-3"
-                                readonly>
+                            <input type="text" id="harga" class="form-control border border-2 rounded-3" value="{{ $tempat->tiket_masuk ? number_format($tempat->tiket_masuk,0,',','.') : 'Gratis' }}" readonly>
                         </div>
 
                         <div class="col-md-6 mb-3 d-flex align-items-end">
-                            <button class="filter-btn active w-100 py-2">Google Map</button>
+                            <a href="https://www.google.com/maps/search/?api=1&query={{ $tempat->latitude }},{{ $tempat->longitude }}" target="_blank" class="filter-btn active w-100 py-2 text-center">Buka di Google Maps</a>
                         </div>
                     </div>
                 </div>
