@@ -26,7 +26,7 @@
               @endif
 
               @if ($canCreate)
-                <a href="{{ route('tour-guide.create') }}" class="btn btn-primary">
+                <a href="{{ route('tour-guide.create') }}" class="btn btn-primary" style="background-color: #007bff; border-color: #007bff; color: #fff; font-weight: 600;">
                   <i class="ti ti-plus me-1"></i> Tambah Tour Guide
                 </a>
               @else
@@ -66,7 +66,7 @@
               <h6 class="fw-semibold mb-1">Belum ada profil tour guide</h6>
               <p class="text-muted mb-3">Buat profil pertama untuk mulai tampil di katalog.</p>
               @if ($canCreate)
-                <a href="{{ route('tour-guide.create') }}" class="btn btn-primary">
+                <a href="{{ route('tour-guide.create') }}" class="btn btn-primary" style="background-color: #007bff; border-color: #007bff; color: #fff; font-weight: 600; padding: 12px 24px;">
                   <i class="ti ti-plus me-1"></i> Tambah Profil Tour Guide Pertama
                 </a>
               @endif

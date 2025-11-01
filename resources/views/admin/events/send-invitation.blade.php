@@ -34,12 +34,7 @@
                                     </label>
                                 </div>
                                 <hr>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="select_all_approved" value="1" id="selectAllApproved">
-                                    <label class="form-check-label" for="selectAllApproved">
-                                        Kirim ke semua Tour Guide yang sudah Approved
-                                    </label>
-                                </div>
+                               
                             </div>
                         </div>
 

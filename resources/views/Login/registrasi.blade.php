@@ -16,12 +16,14 @@
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
+      background-attachment: fixed;
       color: #fff;
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       min-height: 100vh;
-      overflow: hidden;
+      padding: 20px;
+      overflow-y: auto;
     }
 
     .register-container {
@@ -34,7 +36,8 @@
       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
       width: 90%;
       max-width: 950px;
-      overflow: hidden;
+      overflow: visible;
+      margin: 20px auto;
     }
 
     /* Kiri */
@@ -89,7 +92,8 @@
       padding: 50px 40px;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
+      min-height: auto;
     }
 
     .right-panel h3 {
@@ -140,6 +144,57 @@
       color: #00b4d8;
     }
 
+    /* Error & Success Messages */
+    .alert {
+      padding: 12px 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .alert-error {
+      background: rgba(220, 53, 69, 0.9);
+      color: #fff;
+      border-left: 4px solid #dc3545;
+    }
+
+    .alert-success {
+      background: rgba(40, 167, 69, 0.9);
+      color: #fff;
+      border-left: 4px solid #28a745;
+    }
+
+    .error-message {
+      color: #ffd60a;
+      font-size: 12px;
+      margin-top: -10px;
+      margin-bottom: 10px;
+      display: block;
+      font-weight: 500;
+    }
+
+    .form-control.error {
+      border: 2px solid #dc3545;
+      background: rgba(220, 53, 69, 0.1);
+    }
+
+    .form-control.error:focus {
+      border-color: #dc3545;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25);
+    }
+
+    .password-hint {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.8);
+      margin-top: -10px;
+      margin-bottom: 10px;
+    }
+
     @media (max-width: 768px) {
       .register-container {
         flex-direction: column;
@@ -166,17 +221,103 @@
     <!-- Bagian Kanan -->
     <div class="right-panel">
       <h3>Form Pendaftaran</h3>
+
+      @if(session('success'))
+        <div class="alert alert-success">
+          <span>✓</span>
+          <span>{{ session('success') }}</span>
+        </div>
+      @endif
+
+      @if(session('error'))
+        <div class="alert alert-error">
+          <span>✕</span>
+          <span>{{ session('error') }}</span>
+        </div>
+      @endif
+
+      @if($errors->any())
+        @if(!session('error'))
+          <div class="alert alert-error">
+            <span>✕</span>
+            <span>Mohon perbaiki kesalahan berikut:</span>
+          </div>
+        @endif
+      @endif
+
       <form method="POST" action="{{ route('registrasi') }}">
         @csrf
-        <input type="text" name="name" class="form-control" placeholder="Nama Lengkap" required>
-        <input type="email" name="email" class="form-control" placeholder="Email" required>
-        <select name="role" class="form-control" required>
-          <option value="">Daftar Sebagai</option>
-          <option value="tempat_wisata">Tempat Wisata</option>
-          <option value="tour_guide">Tour Guide</option>
-        </select>
-        <input type="password" name="password" class="form-control" placeholder="Password" required>
-        <input type="password" name="password_confirmation" class="form-control" placeholder="Konfirmasi Password" required>
+        
+        <div style="margin-bottom: 15px;">
+          <input 
+            type="text" 
+            name="name" 
+            class="form-control {{ $errors->has('name') ? 'error' : '' }}" 
+            placeholder="Nama Lengkap" 
+            value="{{ old('name') }}"
+            required
+          >
+          @error('name')
+            <span class="error-message">{{ $message }}</span>
+          @enderror
+        </div>
+
+        <div style="margin-bottom: 15px;">
+          <input 
+            type="email" 
+            name="email" 
+            class="form-control {{ $errors->has('email') ? 'error' : '' }}" 
+            placeholder="Email (contoh: nama@email.com)" 
+            value="{{ old('email') }}"
+            required
+          >
+          @error('email')
+            <span class="error-message">{{ $message }}</span>
+          @enderror
+        </div>
+
+        <div style="margin-bottom: 15px;">
+          <select 
+            name="role" 
+            class="form-control {{ $errors->has('role') ? 'error' : '' }}" 
+            required
+          >
+            <option value="">Daftar Sebagai</option>
+            <option value="tempat_wisata" {{ old('role') == 'tempat_wisata' ? 'selected' : '' }}>Tempat Wisata</option>
+            <option value="tour_guide" {{ old('role') == 'tour_guide' ? 'selected' : '' }}>Tour Guide</option>
+          </select>
+          @error('role')
+            <span class="error-message">{{ $message }}</span>
+          @enderror
+        </div>
+
+        <div style="margin-bottom: 15px;">
+          <input 
+            type="password" 
+            name="password" 
+            class="form-control {{ $errors->has('password') ? 'error' : '' }}" 
+            placeholder="Password (minimal 8 karakter)" 
+            required
+          >
+          @error('password')
+            <span class="error-message">{{ $message }}</span>
+          @enderror
+          <span class="password-hint">Gunakan password yang kuat, minimal 8 karakter</span>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+          <input 
+            type="password" 
+            name="password_confirmation" 
+            class="form-control {{ $errors->has('password_confirmation') ? 'error' : '' }}" 
+            placeholder="Konfirmasi Password" 
+            required
+          >
+          @error('password_confirmation')
+            <span class="error-message">{{ $message }}</span>
+          @enderror
+        </div>
+
         <button type="submit" class="btn-primary">Daftar Sekarang</button>
       </form>
 

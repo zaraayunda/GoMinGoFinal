@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>GoMinGo - Dashboard</title>
-    <link rel="shortcut icon" type="image/png" href="{{ asset('assetsdashboard/images/logos/favicon.png') }}" />
+    <link rel="shortcut icon" type="image/png" href="{{ asset('assetsdashboard/images/logos/logogo.png') }}" />
     <link rel="stylesheet" href="{{ asset('assetsdashboard/css/styles.min.css') }}" />
     @stack('styles')
 </head>
@@ -107,6 +107,14 @@
                                 </a>
                             </li>
                         @endif
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{{ route('tourguide.events.index') }}" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-calendar-event"></i>
+                                </span>
+                                <span class="hide-menu">Event</span>
+                            </a>
+                        </li>
                         @endif
                         @if(Auth::user()->role == 'admin')
                         <li class="sidebar-item">
@@ -132,7 +140,7 @@
                         <li class="sidebar-item">
                             <a class="sidebar-link" href="{{ route('admin.tour-guide.index') }}" aria-expanded="false">
                                 <span>
-                                    <i class="ti ti-user-star"></i>
+                                    <i class="ti ti-user-check"></i>
                                 </span>
                                 <span class="hide-menu">Tour Guide</span>
                             </a>
