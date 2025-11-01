@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Modernize Free</title>
+    <title>GoMinGo - Dashboard</title>
     <link rel="shortcut icon" type="image/png" href="{{ asset('assetsdashboard/images/logos/favicon.png') }}" />
     <link rel="stylesheet" href="{{ asset('assetsdashboard/css/styles.min.css') }}" />
 </head>
@@ -18,7 +18,7 @@
             <!-- Sidebar scroll-->
             <div>
                 <div class="brand-logo d-flex align-items-center justify-content-between">
-                    <a href="./index.html" class="text-nowrap logo-img">
+                    <a href="{{ route('tempat-wisata.dashboard') }}" class="text-nowrap logo-img">
                         <img src="{{ asset('assetsdashboard/images/logos/dark-logo.svg') }}" width="180"
                             alt="" />
                     </a>
@@ -33,8 +33,9 @@
                             <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
                             <span class="hide-menu">Home</span>
                         </li>
+                        @if(Auth::user()->role == 'tempat_wisata')
                         <li class="sidebar-item">
-                            <a class="sidebar-link" href="./index.html" aria-expanded="false">
+                            <a class="sidebar-link" href="{{ route('tempat-wisata.dashboard') }}" aria-expanded="false">
                                 <span>
                                     <i class="ti ti-layout-dashboard"></i>
                                 </span>
@@ -43,102 +44,70 @@
                         </li>
                         <li class="nav-small-cap">
                             <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-                            <span class="hide-menu">Data</span>
+                            <span class="hide-menu">Tempat Wisata</span>
                         </li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link" href="./ui-buttons.html" aria-expanded="false">
+                            <a class="sidebar-link" href="{{ route('tempat-wisata.index') }}" aria-expanded="false">
                                 <span>
-                                    <i class="ti ti-article"></i>
+                                    <i class="ti ti-map-pin"></i>
                                 </span>
-                                <span class="hide-menu">Buttons</span>
+                                <span class="hide-menu">Daftar Tempat Wisata</span>
                             </a>
                         </li>
+                        @php
+                            $canCreateTempatWisata = !\App\Models\TempatWisata::where('user_id', Auth::id())
+                                ->whereIn('status', ['approved', 'pending'])
+                                ->exists();
+                        @endphp
+                        @if($canCreateTempatWisata)
+                            <li class="sidebar-item">
+                                <a class="sidebar-link" href="{{ route('tempat-wisata.create') }}" aria-expanded="false">
+                                    <span>
+                                        <i class="ti ti-plus"></i>
+                                    </span>
+                                    <span class="hide-menu">Tambah Tempat Wisata</span>
+                                </a>
+                            </li>
+                        @endif
+                        @endif
+                        @if(Auth::user()->role == 'tour_guide')
                         <li class="sidebar-item">
-                            <a class="sidebar-link" href="./ui-alerts.html" aria-expanded="false">
+                            <a class="sidebar-link" href="{{ route('tour-guide.dashboard') }}" aria-expanded="false">
                                 <span>
-                                    <i class="ti ti-alert-circle"></i>
+                                    <i class="ti ti-layout-dashboard"></i>
                                 </span>
-                                <span class="hide-menu">Alerts</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="./ui-card.html" aria-expanded="false">
-                                <span>
-                                    <i class="ti ti-cards"></i>
-                                </span>
-                                <span class="hide-menu">Card</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="./ui-forms.html" aria-expanded="false">
-                                <span>
-                                    <i class="ti ti-file-description"></i>
-                                </span>
-                                <span class="hide-menu">Forms</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="./ui-typography.html" aria-expanded="false">
-                                <span>
-                                    <i class="ti ti-typography"></i>
-                                </span>
-                                <span class="hide-menu">Typography</span>
+                                <span class="hide-menu">Dashboard</span>
                             </a>
                         </li>
                         <li class="nav-small-cap">
                             <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-                            <span class="hide-menu">AUTH</span>
+                            <span class="hide-menu">Tour Guide</span>
                         </li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link" href="./authentication-login.html" aria-expanded="false">
+                            <a class="sidebar-link" href="{{ route('tour-guide.index') }}" aria-expanded="false">
                                 <span>
-                                    <i class="ti ti-login"></i>
+                                    <i class="ti ti-user-star"></i>
                                 </span>
-                                <span class="hide-menu">Login</span>
+                                <span class="hide-menu">Profil Tour Guide</span>
                             </a>
                         </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="./authentication-register.html" aria-expanded="false">
-                                <span>
-                                    <i class="ti ti-user-plus"></i>
-                                </span>
-                                <span class="hide-menu">Register</span>
-                            </a>
-                        </li>
-                        <li class="nav-small-cap">
-                            <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-                            <span class="hide-menu">EXTRA</span>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="./icon-tabler.html" aria-expanded="false">
-                                <span>
-                                    <i class="ti ti-mood-happy"></i>
-                                </span>
-                                <span class="hide-menu">Icons</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="./sample-page.html" aria-expanded="false">
-                                <span>
-                                    <i class="ti ti-aperture"></i>
-                                </span>
-                                <span class="hide-menu">Sample Page</span>
-                            </a>
-                        </li>
+                        @php
+                            $canCreateTourGuide = !\App\Models\TourGuide::where('user_id', Auth::id())
+                                ->whereIn('status', ['approved', 'pending'])
+                                ->exists();
+                        @endphp
+                        @if($canCreateTourGuide)
+                            <li class="sidebar-item">
+                                <a class="sidebar-link" href="{{ route('tour-guide.create') }}" aria-expanded="false">
+                                    <span>
+                                        <i class="ti ti-plus"></i>
+                                    </span>
+                                    <span class="hide-menu">Tambah Tour Guide</span>
+                                </a>
+                            </li>
+                        @endif
+                        @endif
                     </ul>
-                    <div class="unlimited-access hide-menu bg-light-primary position-relative mb-7 mt-5 rounded">
-                        <div class="d-flex">
-                            <div class="unlimited-access-title me-3">
-                                <h6 class="fw-semibold fs-4 mb-6 text-dark w-85">Upgrade to pro</h6>
-                                <a href="https://adminmart.com/product/modernize-bootstrap-5-admin-template/"
-                                    target="_blank" class="btn btn-primary fs-2 fw-semibold lh-sm">Buy Pro</a>
-                            </div>
-                            <div class="unlimited-access-img">
-                                <img src="{{ asset('assetsdashboard/images/backgrounds/rocket.png') }}" alt=""
-                                    class="img-fluid">
-                            </div>
-                        </div>
-                    </div>
                 </nav>
                 <!-- End Sidebar navigation -->
             </div>
@@ -148,9 +117,58 @@
         <!--  Main wrapper -->
         <div class="body-wrapper">
             <!--  Header Start -->
-            
+            <header class="app-header">
+                <nav class="navbar navbar-expand-lg navbar-light">
+                    <ul class="navbar-nav">
+                        <li class="nav-item d-block d-xl-none">
+                            <a class="nav-link sidebartoggler nav-icon-hover" id="headerCollapse" href="javascript:void(0)">
+                                <i class="ti ti-menu-2"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
+                        <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <img src="{{ asset('assetsdashboard/images/profile/user-1.jpg') }}" alt="" width="35" height="35" class="rounded-circle">
+                                </a>
+                                <div class="dropdown-menu content-dd dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
+                                    <div class="profile-dropdown position-relative" data-simplebar>
+                                        <div class="py-3 px-7 pb-0">
+                                            <h5 class="mb-0 fs-5 fw-semibold">{{ Auth::user()->name }}</h5>
+                                            <p class="mb-0 text-muted">{{ Auth::user()->email }}</p>
+                                            <small class="text-muted">{{ ucfirst(str_replace('_', ' ', Auth::user()->role)) }}</small>
+                                        </div>
+                                        <div class="d-flex align-items-center py-4 px-7">
+                                            <form method="POST" action="{{ route('logout') }}">
+                                                @csrf
+                                                <button type="submit" class="btn btn-outline-primary mx-3 mt-2 d-block">
+                                                    Logout
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </header>
             <!--  Header End -->
             <div class="container-fluid">
+                @if(session('success'))
+                  <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+                @endif
+                @if(session('error'))
+                  <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                    {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+                @endif
                 <!--  Row 1 -->
                 @yield('content')
             </div>
@@ -162,7 +180,8 @@
     <script src="{{ asset('assetsdashboard/js/app.min.js') }}"></script>
     <script src="{{ asset('assetsdashboard/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
     <script src="{{ asset('assetsdashboard/libs/simplebar/dist/simplebar.js') }}"></script>
-    <script src="{{ asset('assetsdashboard/js/dashboard.js"></script>
+    <script src="{{ asset('assetsdashboard/js/dashboard.js') }}"></script>
 </body>
 
 </html>
+
