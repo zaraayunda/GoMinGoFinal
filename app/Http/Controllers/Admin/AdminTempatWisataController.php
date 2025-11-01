@@ -89,7 +89,7 @@ class AdminTempatWisataController extends Controller
      */
     public function destroy($id)
     {
-        $tempatWisata = TempatWisata::findOrFail($id);
+        $tempatWisata = TempatWisata::with('photos')->findOrFail($id);
 
         // Hapus foto-foto terkait
         foreach ($tempatWisata->photos as $photo) {
