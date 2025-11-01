@@ -195,7 +195,8 @@
             @endfor
           </div>
           <div class="d-flex justify-content-center gap-2">
-            <a href="{{ url('/tourguide/'.$g->id) }}" class="btn btn-outline-primary btn-sm px-3">Detail</a>
+            <a href="{{ route('tourguide.public', $g->id) }}" class="btn btn-outline-primary btn-sm px-3">Detail</a>
+
             <a href="https://wa.me/{{ preg_replace('/[^0-9]/','',$g->kontak) }}" target="_blank"
                class="btn btn-success btn-sm px-3">Hubungi</a>
           </div>

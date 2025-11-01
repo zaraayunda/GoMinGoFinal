@@ -1,296 +1,131 @@
-
 <!DOCTYPE html>
 <html class="no-js" lang="">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="x-ua-compatible" content="ie=edge" />
-    <title>GoMinGo</title>
-    <meta name="description" content="" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- Place favicon.ico in the root directory -->
-
-    <!-- ========================= CSS here ========================= -->
-    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap-5.0.0-beta1.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/LineIcons.2.0.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/tiny-slider.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/animate.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/lindy-uikit.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/custom.css') }}" />
-  </head>
-  <body>
-    <!--[if lte IE 9]>
-      <p class="browserupgrade">
-        You are using an <strong>outdated</strong> browser. Please
-        <a href="https://browsehappy.com/">upgrade your browser</a> to improve
-        your experience and security.
-      </p>
-    <![endif]-->
-
-    <!-- ========================= preloader start ========================= -->
-    <div class="preloader">
-      <div class="loader">
-        <div class="spinner">
-          <div class="spinner-container">
-            <div class="spinner-rotator">
-              <div class="spinner-left">
-                <div class="spinner-circle"></div>
-              </div>
-              <div class="spinner-right">
-                <div class="spinner-circle"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- ========================= preloader end ========================= -->
-
-    <!-- ========================= hero-section-wrapper-5 start ========================= -->
-    <section id="home" class="hero-section-wrapper-5">
-
-      <!-- ========================= header-6 start ========================= -->
-      <header class="header header-6">
-        <div class="navbar-area">
-          <div class="container">
-            <div class="row align-items-center">
-              <div class="col-lg-12">
-                <nav class="navbar navbar-expand-lg">
-                  <a class="navbar-brand" href="index.html">
-                    <img src="{{ asset('assets/img/logo/logogo.png') }}" alt="Logo" width="120" height="120"/>
-                  </a>
-                  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent6" aria-controls="navbarSupportedContent6" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="toggler-icon"></span>
-                    <span class="toggler-icon"></span>
-                    <span class="toggler-icon"></span>
-                  </button>
-  
-                  <div class="collapse navbar-collapse sub-menu-bar" id="navbarSupportedContent6">
-                    <ul id="nav6" class="navbar-nav ms-auto">
-                      <li class="nav-item">
-                        <a class="page-scroll active" href="{{ url('/') }}">Home</a>
-                        <a class="page-scroll active" href="#tourguide">Tour Guide</a>
-                      </li>
-                    </ul>
-                  </div>
-                  <!-- navbar collapse -->
-                </nav>
-                <!-- navbar -->
-              </div>
-            </div>
-            <!-- row -->
-          </div>
-          <!-- container -->
-        </div>
-        <!-- navbar area -->
-      </header>
-      <!-- ========================= header-6 end ========================= -->
-
-      <!-- ========================= hero-5 start ========================= -->
-    </section>
-    <!-- ========================= hero-section-wrapper-6 end ========================= -->
-
-    <!-- ========================= feature style-5 start ========================= -->
-    <section id="tourguide" class="katalog-tourguide-section pt-100 pb-100">
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="x-ua-compatible" content="ie=edge"/>
+  <title>GoMinGo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" href="{{ asset('assets/css/bootstrap-5.0.0-beta1.min.css') }}"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"/>
+  <link rel="stylesheet" href="{{ asset('assets/css/LineIcons.2.0.css') }}"/>
+  <link rel="stylesheet" href="{{ asset('assets/css/tiny-slider.css') }}"/>
+  <link rel="stylesheet" href="{{ asset('assets/css/animate.css') }}"/>
+  <link rel="stylesheet" href="{{ asset('assets/css/lindy-uikit.css') }}"/>
+  <link rel="stylesheet" href="{{ asset('assets/css/custom.css') }}"/>
+  <style>
+    .tg-card{transition:transform .15s ease, box-shadow .15s ease}
+    .tg-card:hover{transform:translateY(-3px); box-shadow:0 16px 40px rgba(0,0,0,.08)}
+    .filter .btn{border-radius:999px}
+  </style>
+</head>
+<body>
+  <section id="home" class="hero-section-wrapper-5">
+    <header class="header header-6">
+      <div class="navbar-area">
         <div class="container">
-
-            <!-- Filter Tombol -->
-            <div class="section-title text-center mb-40">
-                <h2>Pilih Tour Guide</h2>
-                <p>untuk menemani perjalananmu.</p>
-            </div>
-
-            <!-- Pencarian -->
-            <div class="text-center mb-4">
-                <div class="d-flex justify-content-center">
-                    <div class="position-relative w-75">
-                        <input type="text" id="searchGuide"
-                            class="form-control rounded-pill ps-4 pe-5 py-3 fs-5 shadow-sm" placeholder="Cari Tour Guide...">
-                        <button type="button"
-                            class="btn position-absolute top-50 end-0 translate-middle-y me-2 text-primary"
-                            style="background: none; border: none;">
-                            <i class="bi bi-search fs-3"></i>
-                        </button>
-                    </div>
+          <div class="row align-items-center">
+            <div class="col-lg-12">
+              <nav class="navbar navbar-expand-lg">
+                <a class="navbar-brand" href="{{ url('/') }}">
+                  <img src="{{ asset('assets/img/logo/logogo.png') }}" alt="Logo" width="120" height="120"/>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent6">
+                  <span class="toggler-icon"></span><span class="toggler-icon"></span><span class="toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse sub-menu-bar" id="navbarSupportedContent6">
+                  <ul id="nav6" class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                      <a class="page-scroll active" href="{{ url('/') }}">Home</a>
+                      <a class="page-scroll active" href="#tourguide">Tour Guide</a>
+                    </li>
+                  </ul>
                 </div>
-            </div>
-
-            <!-- Filter Kategori -->
-            <div class="text-center mb-50">
-                <button class="filter-btn active" data-filter="all">Semua</button>
-                <button class="filter-btn" data-filter="alam">Alam</button>
-                <button class="filter-btn" data-filter="kuliner">Kuliner</button>
-                <button class="filter-btn" data-filter="budaya">Budaya</button>
-            </div>
-
-            <!-- Daftar Kartu tourguide -->
-            <div class="row justify-content-center" id="tourguide-list">
-
-                <!-- Alam -->
-                <div class="col-lg-3 col-md-6 col-sm-12 tourguide-item" data-category="alam">
-                    <div class="single-pricing-wrapper">
-                        <div class="single-pricing">
-                            <div class="img-wrapper">
-                                <img src="{{ asset('assets/img/tourguide/foto1.jpeg') }}" alt="Pantai Padang"
-                                    class="img-fluid">
-                            </div>
-                            <h4>Pantai Padang</h4>
-                            <p>Kota Padang, Sumatera Barat</p>
-                            <a href="{{ url('/detailtourguide') }}" class="button radius-30 lihat-detail">Lihat Detail</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Kuliner -->
-                <div class="col-lg-3 col-md-6 col-sm-12 tourguide-item" data-category="kuliner">
-                    <div class="single-pricing-wrapper">
-                        <div class="single-pricing">
-                            <div class="img-wrapper">
-                                <img src="{{ asset('assets/img/tourguide/foto1.jpeg') }}" alt="Rendang Padang"
-                                    class="img-fluid">
-                            </div>
-                            <h4>Rumah Makan Sederhana</h4>
-                            <p>Padang, Sumatera Barat</p>
-                            <a href="{{ url('/detailtourguide') }}" class="button radius-30 lihat-detail">Lihat Detail</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Budaya -->
-                <div class="col-lg-3 col-md-6 col-sm-12 tourguide-item" data-category="budaya">
-                    <div class="single-pricing-wrapper">
-                        <div class="single-pricing">
-                            <div class="img-wrapper">
-                                <img src="{{ asset('assets/img/tourguide/foto1.jpeg') }}" alt="Jam Gadang"
-                                    class="img-fluid">
-                            </div>
-                            <h4>Jam Gadang</h4>
-                            <p>Bukittinggi, Sumatera Barat</p>
-                            <a href="{{ url('/detailtourguide') }}" class="button radius-30 lihat-detail">Lihat Detail</a>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- Modal Detail tourguide -->
-        
-        <!-- Script -->
-        <script>
-            // === FILTER KATEGORI ===
-            const filterButtons = document.querySelectorAll(".filter-btn");
-            const tourguideItems = document.querySelectorAll(".tourguide-item");
-
-            filterButtons.forEach(btn => {
-                btn.addEventListener("click", function() {
-                    const filter = this.getAttribute("data-filter");
-                    filterButtons.forEach(b => b.classList.remove("active"));
-                    this.classList.add("active");
-                    tourguideItems.forEach(item => {
-                        item.style.display = (filter === "all" || item.dataset.category === filter) ?
-                            "block" : "none";
-                    });
-                });
-            });
-
-            // === MODAL DETAIL ===
-            
-        </script>
-    </section>
-
-    <!-- ========================= clients-logo start ========================= -->
-    <section class="clients-logo-section pt-100 pb-100">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-12">
-            <div class="client-logo wow fadeInUp" data-wow-delay=".2s">
-              <img src="{{ asset('assets/img/clients/brands.svg') }}" alt="" class="w-100">
+              </nav>
             </div>
           </div>
         </div>
       </div>
-    </section>
-    <!-- ========================= clients-logo end ========================= -->
+    </header>
+  </section>
 
-    <!-- ========================= footer style-4 start ========================= -->
-    <footer class="footer footer-style-4">
-      <div class="container">
-        <div class="widget-wrapper">
-          <div class="row">
-            <div class="col-xl-3 col-lg-4 col-md-6">
-              <div class="footer-widget wow fadeInUp" data-wow-delay=".2s">
-                <div class="logo">
-                  <a href="#0"> <img src="{{ asset('assets/img/logo/logo.svg') }}" alt=""> </a>
-                </div>
-                <p class="desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Facilisis nulla placerat amet amet congue.</p>
-                <ul class="socials">
-                  <li> <a href="#0"> <i class="lni lni-facebook-filled"></i> </a> </li>
-                  <li> <a href="#0"> <i class="lni lni-twitter-filled"></i> </a> </li>
-                  <li> <a href="#0"> <i class="lni lni-instagram-filled"></i> </a> </li>
-                  <li> <a href="#0"> <i class="lni lni-linkedin-original"></i> </a> </li>
-                </ul>
+  <section id="tourguide" class="katalog-tourguide-section pt-100 pb-100">
+    <div class="container">
+
+      <div class="section-title text-center mb-40">
+        <h2>Pilih Tour Guide</h2>
+        <p>Temukan pendamping perjalanan sesuai spesialisasi.</p>
+      </div>
+
+      {{-- Search --}}
+      <form class="text-center mb-4" method="get" action="{{ route('tourguide.index') }}">
+        <div class="d-flex justify-content-center">
+          <div class="position-relative w-75">
+            <input type="text" name="q" value="{{ $q ?? '' }}"
+                   class="form-control rounded-pill ps-4 pe-5 py-3 fs-5 shadow-sm"
+                   placeholder="Cari nama tour guide...">
+            <button type="submit"
+              class="btn position-absolute top-50 end-0 translate-middle-y me-2 text-primary"
+              style="background:none;border:none;">
+              <i class="bi bi-search fs-3"></i>
+            </button>
+          </div>
+        </div>
+        {{-- keep spesialisasi saat search --}}
+        @if(!empty($sp)) <input type="hidden" name="spesialisasi" value="{{ $sp }}"> @endif
+      </form>
+
+      {{-- Filter spesialisasi --}}
+      @php
+        $isActive = fn($k)=> ($sp===$k) ? 'btn-primary' : 'btn-outline-primary';
+      @endphp
+      <div class="text-center mb-50 filter">
+        <a class="btn {{ empty($sp)?'btn-primary':'btn-outline-primary' }} me-2"
+           href="{{ route('tourguide.index', array_filter(['q'=>$q])) }}">Semua</a>
+        <a class="btn {{ $isActive('alam') }} me-2"
+           href="{{ route('tourguide.index', array_filter(['spesialisasi'=>'alam','q'=>$q])) }}">Alam</a>
+        <a class="btn {{ $isActive('kuliner') }} me-2"
+           href="{{ route('tourguide.index', array_filter(['spesialisasi'=>'kuliner','q'=>$q])) }}">Kuliner</a>
+        <a class="btn {{ $isActive('budaya') }}"
+           href="{{ route('tourguide.index', array_filter(['spesialisasi'=>'budaya','q'=>$q])) }}">Budaya</a>
+      </div>
+
+      {{-- Grid cards --}}
+      <div class="row justify-content-center" id="tourguide-list">
+        @forelse($guides as $g)
+          <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-4">
+            <div class="tg-card p-3 shadow-sm rounded-4 border h-100 d-flex flex-column text-center">
+              <div class="mb-3">
+                <img src="{{ $g->foto_url }}" alt="{{ $g->nama }}"
+                     class="rounded-circle border border-3"
+                     style="width:100px;height:100px;object-fit:cover;">
               </div>
-            </div>
-            <div class="col-xl-2 offset-xl-1 col-lg-2 col-md-6 col-sm-6">
-              <div class="footer-widget wow fadeInUp" data-wow-delay=".3s">
-                <h6>Quick Link</h6>
-                <ul class="links">
-                  <li> <a href="#0">Home</a> </li>
-                  <li> <a href="#0">About</a> </li>
-                  <li> <a href="#0">Service</a> </li>
-                  <li> <a href="#0">Testimonial</a> </li>
-                  <li> <a href="#0">Contact</a> </li>
-                </ul>
-              </div>
-            </div>
-            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6">
-              <div class="footer-widget wow fadeInUp" data-wow-delay=".4s">
-                <h6>Services</h6>
-                <ul class="links">
-                  <li> <a href="#0">Web Design</a> </li>
-                  <li> <a href="#0">Web Development</a> </li>
-                  <li> <a href="#0">Seo Optimization</a> </li>
-                  <li> <a href="#0">Blog Writing</a> </li>
-                </ul>
-              </div>
-            </div>
-            <div class="col-xl-3 col-lg-3 col-md-6">
-              <div class="footer-widget wow fadeInUp" data-wow-delay=".5s">
-                <h6>Download App</h6>
-                <ul class="download-app">
-                  <li>
-                    <a href="#0">
-                      <span class="icon"><i class="lni lni-apple"></i></span>
-                      <span class="text">Download on the <b>App Store</b> </span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#0">
-                      <span class="icon"><i class="lni lni-play-store"></i></span>
-                      <span class="text">GET IT ON <b>Play Store</b> </span>
-                    </a>
-                  </li>
-                </ul>
+              <h5 class="fw-bold mb-1">{{ $g->nama }}</h5>
+              <p class="text-muted mb-3">Spesialis {{ ucfirst($g->spesialisasi ?? '-') }}</p>
+
+              <div class="mt-auto d-flex justify-content-center gap-2">
+                <a href="{{ route('tourguide.public', $g->id) }}" class="btn btn-outline-primary btn-sm px-3">Detail</a>
+                @if($g->wa_link)
+                  <a href="{{ $g->wa_link }}" target="_blank" class="btn btn-success btn-sm px-3">Hubungi</a>
+                @endif
               </div>
             </div>
           </div>
-        </div>
-        <div class="copyright-wrapper wow fadeInUp" data-wow-delay=".2s">
-          <p>Design and Developed by <a href="https://uideck.com" rel="nofollow" target="_blank">UIdeck</a> Built-with <a href="https://uideck.com" rel="nofollow" target="_blank">Lindy UI Kit</a>. Distributed by <a href="https://themewagon.com" target="_blank">ThemeWagon</a></p>
-        </div>
+        @empty
+          <div class="col-12 text-center text-muted py-5">Tidak ada tour guide yang cocok.</div>
+        @endforelse
       </div>
-    </footer>
-    <!-- ========================= footer style-4 end ========================= -->
 
-    <!-- ========================= scroll-top start ========================= -->
-    <a href="#" class="scroll-top"> <i class="lni lni-chevron-up"></i> </a>
-    <!-- ========================= scroll-top end ========================= -->
-		
+      {{-- Pagination --}}
+      <div class="d-flex justify-content-center mt-3">
+        {{ $guides->links() }}
+      </div>
 
-    <!-- ========================= JS here ========================= -->
-    <script src="{{ asset('assets/js/bootstrap-5.0.0-beta1.min.js') }}"></script>
-    <script src="{{ asset('assets/js/tiny-slider.js') }}"></script>
-    <script src="{{ asset('assets/js/wow.min.js') }}"></script>
-    <script src="{{ asset('assets/js/main.js') }}"></script>
-  </body>
+    </div>
+  </section>
+
+  <script src="{{ asset('assets/js/bootstrap-5.0.0-beta1.min.js') }}"></script>
+  <script src="{{ asset('assets/js/tiny-slider.js') }}"></script>
+  <script src="{{ asset('assets/js/wow.min.js') }}"></script>
+  <script src="{{ asset('assets/js/main.js') }}"></script>
+</body>
 </html>

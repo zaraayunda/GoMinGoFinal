@@ -58,9 +58,14 @@ Route::get('/detailwisata', function () {
 });
 // Public detail page for a tempat wisata (can be accessed from map popups)
 Route::get('/detailwisata/{id}', [TempatWisataController::class, 'publicShow'])->name('detailwisata.show');
-Route::get('/tourguide', function () {
-    return view('user.tourguide');
-});
+Route::get('/tourguide', [TourGuideController::class, 'publicIndex'])
+    ->name('tourguide.index'); 
 Route::get('/event', function () {
     return view('user.event');
 });
+
+// Public Tour Guide detail (user-facing)
+
+Route::get('/tourguide/{id}', [TourGuideController::class, 'publicShow'])
+    ->name('tourguide.public');
+

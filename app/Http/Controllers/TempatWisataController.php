@@ -145,7 +145,7 @@ class TempatWisataController extends Controller
             foreach ($request->file('photos') as $index => $photo) {
                 $filename = time() . '_' . Str::random(10) . '.' . $photo->getClientOriginalExtension();
                 $path = $photo->storeAs('tempat-wisata/photos', $filename, 'public');
-                
+
                 Photo::create([
                     'tempat_wisata_id' => $tempatWisata->id,
                     'file_path' => $path,
@@ -252,7 +252,7 @@ class TempatWisataController extends Controller
             if ($tempatWisata->bukti_kepemilikan) {
                 Storage::disk('public')->delete($tempatWisata->bukti_kepemilikan);
             }
-            
+
             $file = $request->file('bukti_kepemilikan');
             $filename = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
             $buktiKepemilikanPath = $file->storeAs('tempat-wisata/bukti-kepemilikan', $filename, 'public');
@@ -272,7 +272,7 @@ class TempatWisataController extends Controller
             foreach ($request->file('photos') as $index => $photo) {
                 $filename = time() . '_' . Str::random(10) . '.' . $photo->getClientOriginalExtension();
                 $path = $photo->storeAs('tempat-wisata/photos', $filename, 'public');
-                
+
                 Photo::create([
                     'tempat_wisata_id' => $tempatWisata->id,
                     'file_path' => $path,
@@ -324,50 +324,71 @@ class TempatWisataController extends Controller
     /**
      * Display map with all tourist spots
      */
-    public function showMap()
+
+    public function showMap(Request $r)
     {
-        // Provide an array of plain objects (with first photo URL) so the view/JS can consume easily
-        $tempatWisatas = TempatWisata::with('photos')->get()->map(function ($t) {
-            // If a photo exists, create a public URL (storage disk "public")
-            $fotoUrl = null;
-            if ($t->photos && $t->photos->count()) {
-                $fotoUrl = $t->photos->first()->file_path ? Storage::url($t->photos->first()->file_path) : null;
-            }
+        $kat = strtolower((string) $r->query('kategori', ''));
+        $qstr = trim((string) $r->query('q', ''));
+        $allowed = ['alam', 'kuliner', 'budaya'];
+
+        $q = TempatWisata::with('photos');
+
+        if (in_array($kat, $allowed, true)) {
+            $q->where('kategori', $kat);
+        }
+
+        if ($qstr !== '') {
+            $q->where(function ($w) use ($qstr) {
+                $w->where('nama_tempat', 'like', "%{$qstr}%")
+                    ->orWhere('alamat', 'like', "%{$qstr}%")
+                    ->orWhere('deskripsi', 'like', "%{$qstr}%");
+            });
+        }
+
+        $tempatWisatas = $q->latest()->get()->map(function ($t) {
+            $fotoUrl = ($t->photos && $t->photos->count())
+                ? ($t->photos->first()->file_path ? Storage::url($t->photos->first()->file_path) : null)
+                : null;
 
             return [
-                'id' => $t->id,
+                'id'          => $t->id,
                 'nama_tempat' => $t->nama_tempat,
-                'alamat' => $t->alamat,
-                'latitude' => $t->latitude,
-                'longitude' => $t->longitude,
-                'kategori' => $t->kategori,
+                'alamat'      => $t->alamat,
+                'latitude'    => $t->latitude,
+                'longitude'   => $t->longitude,
+                'kategori'    => $t->kategori,
                 'tiket_masuk' => $t->tiket_masuk,
-                'jam_buka' => $t->jam_buka,
-                'foto' => $fotoUrl,
+                'jam_buka'    => $t->jam_buka,
+                'foto'        => $fotoUrl,
             ];
         })->toArray();
 
-        return view('user.peta', compact('tempatWisatas'));
+        return view('user.peta', [
+            'tempatWisatas'  => $tempatWisatas,
+            'activeKategori' => in_array($kat, $allowed, true) ? $kat : '',
+            'searchQ'        => $qstr,
+        ]);
     }
+
 
     /**
      * Public detail page for a tourist spot (accessible from map)
      */
     public function publicShow($id)
-{
-    $tempat = TempatWisata::with(['photos', 'reviews', 'user'])->findOrFail($id);
+    {
+        $tempat = TempatWisata::with(['photos', 'reviews', 'user'])->findOrFail($id);
 
-    // URL foto publik
-    $photos = $tempat->photos->map(fn($p) => $p->file_path ? Storage::url($p->file_path) : null)
-                              ->filter()->values()->toArray();
+        // URL foto publik
+        $photos = $tempat->photos->map(fn($p) => $p->file_path ? Storage::url($p->file_path) : null)
+            ->filter()->values()->toArray();
 
-    // Rekomendasi guide: status approved dan spesialisasi == kategori tempat
-    $rekomendasiGuides = TourGuide::where('status', 'approved')
-        ->where('spesialisasi', $tempat->kategori) // 'alam' | 'kuliner' | 'budaya'
-        ->latest()
-        ->take(8)
-        ->get(['id','nama','spesialisasi','pengalaman','kontak','foto']);
+        // Rekomendasi guide: status approved dan spesialisasi == kategori tempat
+        $rekomendasiGuides = TourGuide::where('status', 'approved')
+            ->where('spesialisasi', $tempat->kategori) // 'alam' | 'kuliner' | 'budaya'
+            ->latest()
+            ->take(8)
+            ->get(['id', 'nama', 'spesialisasi', 'pengalaman', 'kontak', 'foto']);
 
-    return view('user.detailwisata', compact('tempat', 'photos', 'rekomendasiGuides'));
-}
+        return view('user.detailwisata', compact('tempat', 'photos', 'rekomendasiGuides'));
+    }
 }
