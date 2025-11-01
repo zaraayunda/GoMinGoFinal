@@ -25,6 +25,9 @@ class TempatWisata extends Model
 
     public function user() { return $this->belongsTo(User::class); }
     public function photos() { return $this->hasMany(Photo::class); }
-    public function reviews() { return $this->hasMany(Review::class); }
     public function favorites() { return $this->hasMany(Favorite::class); }
+
+    public function reviews() {
+    return $this->hasMany(\App\Models\Review::class);
+}
 }

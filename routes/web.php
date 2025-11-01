@@ -5,6 +5,11 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TempatWisataController;
 use App\Http\Controllers\TourGuideController;
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\TourGuide\EventRegistrationController as TGEventRegController;
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\TourGuide\TourGuideReviewController as TGReviewController;
+use App\Http\Controllers\TourGuideScheduleController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -49,6 +54,14 @@ Route::middleware('auth')->group(function () {
     // ==========================
     Route::get('/tour-guide/dashboard', [TourGuideController::class, 'dashboard'])->name('tour-guide.dashboard');
     Route::resource('tour-guide', TourGuideController::class);
+
+    // Tour Guide Schedule Routes
+    Route::prefix('guide/schedules')->middleware('role:tour_guide')->group(function() {
+        Route::get('/', [TourGuideScheduleController::class, 'index'])->name('guide.schedules.index');
+        Route::post('/', [TourGuideScheduleController::class, 'store'])->name('guide.schedules.store');
+        Route::put('/{schedule}', [TourGuideScheduleController::class, 'update'])->name('guide.schedules.update');
+        Route::delete('/{schedule}', [TourGuideScheduleController::class, 'destroy'])->name('guide.schedules.destroy');
+    });
 });
 
 // ==========================
@@ -61,9 +74,8 @@ Route::get('/detailwisata', function () {
 Route::get('/detailwisata/{id}', [TempatWisataController::class, 'publicShow'])->name('detailwisata.show');
 Route::get('/tourguide', [TourGuideController::class, 'publicIndex'])->name('tourguide.index');
 Route::get('/tourguide/{id}', [TourGuideController::class, 'publicShow'])->name('tourguide.public');
-Route::get('/event', function () {
-    return view('user.event');
-}); // ✅ <— tambahkan ini untuk menutup route event!
+Route::get('/event', [EventController::class, 'publicIndex'])->name('events.list');
+Route::get('/event/{event}', [EventController::class, 'publicShow'])->name('events.show');// ✅ <— tambahkan ini untuk menutup route event!
 
 // ==========================
 // 👑 ADMIN ROUTES
@@ -115,6 +127,57 @@ Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
     });
 });
 
-Route::get('/detailevent', function () {
-    return view('user.detailevent');
+Route::permanentRedirect('/detailevent', '/event');
+
+Route::middleware(['auth','role:tour_guide'])->group(function () {
+    Route::post(
+        '/tour-guide/events/{event}/register',
+        [TGEventRegController::class, 'store']
+    )->name('tourguide.events.register');
 });
+
+Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
+  Route::prefix('events')->name('events.')->group(function () {
+    // ... route events lain (index/show/participants)
+
+    Route::post('/{event}/participants/{registration}/approve',
+      [\App\Http\Controllers\Admin\AdminEventController::class, 'approveParticipant']
+    )->name('participants.approve');
+
+    Route::post('/{event}/participants/{registration}/reject',
+      [\App\Http\Controllers\Admin\AdminEventController::class, 'rejectParticipant']
+    )->name('participants.reject');
+  });
+});
+
+// routes/web.php
+Route::post('/tempat-wisata/{tempat}/reviews',
+    [\App\Http\Controllers\ReviewController::class, 'store']
+)->name('wisata.reviews.store');
+
+
+
+Route::post('/tourguide/{tourGuide}/reviews', [TGReviewController::class,'store'])
+    ->name('tourguide.reviews.store');
+
+
+
+// publik (JSON untuk kalender)
+Route::get('/tourguide/{tourGuide}/schedules.json',
+    [TourGuideScheduleController::class,'publicList']
+)->name('tourguide.schedules.json');
+
+// khusus role tour_guide: CRUD jadwal
+Route::middleware(['auth','role:tour_guide'])->group(function () {
+    Route::get('/tour-guide/schedules',           [TourGuideScheduleController::class,'index'])->name('guide.schedules.index');
+    Route::post('/tour-guide/schedules',          [TourGuideScheduleController::class,'store'])->name('guide.schedules.store');
+    Route::put('/tour-guide/schedules/{schedule}',[TourGuideScheduleController::class,'update'])->name('guide.schedules.update');
+    Route::delete('/tour-guide/schedules/{schedule}',[TourGuideScheduleController::class,'destroy'])->name('guide.schedules.destroy');
+});
+
+// sementara, di web.php
+Route::middleware(['auth'])->group(function () {
+  Route::get('/tour-guide/schedules',[TourGuideScheduleController::class,'index'])->name('guide.schedules.index');
+  // ...
+});
+

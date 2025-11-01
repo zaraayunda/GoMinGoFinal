@@ -21,16 +21,20 @@
         .wisata-photo-gallery img,
         .carousel-item img {
             width: 100%;
-            height: 280px; /* landscape ratio height for desktop */
-            object-fit: cover; /* crop while keeping aspect */
+            height: 280px;
+            /* landscape ratio height for desktop */
+            object-fit: cover;
+            /* crop while keeping aspect */
             border-radius: 8px;
         }
 
         /* Smaller height on narrow screens */
         @media (max-width: 768px) {
+
             .wisata-photo-gallery img,
             .carousel-item img {
-                height: 200px; /* landscape ratio height for mobile */
+                height: 200px;
+                /* landscape ratio height for mobile */
             }
         }
     </style>
@@ -126,11 +130,13 @@
 
                 <!-- FOTO-FOTO WISATA (tampilkan semua sekaligus dalam grid) -->
                 <div class="wisata-photo-gallery mb-4">
-                    @if(!empty($photos) && count($photos))
+                    @if (!empty($photos) && count($photos))
                         <div class="row g-3">
-                            @foreach($photos as $i => $photo)
+                            @foreach ($photos as $i => $photo)
                                 <div class="col-12 col-md-6">
-                                    <img src="{{ $photo }}" alt="Foto {{ $i + 1 }} - {{ $tempat->nama_tempat }}" class="img-fluid detail-photo rounded-3" loading="lazy">
+                                    <img src="{{ $photo }}"
+                                        alt="Foto {{ $i + 1 }} - {{ $tempat->nama_tempat }}"
+                                        class="img-fluid detail-photo rounded-3" loading="lazy">
                                 </div>
                             @endforeach
                         </div>
@@ -145,67 +151,161 @@
                     <div class="row">
                         <div class="col-md-12 mb-3">
                             <label for="namawisata" class="form-label fw-semibold">Nama Tempat</label>
-                            <input type="text" id="namawisata" class="form-control border border-2 rounded-3" value="{{ $tempat->nama_tempat }}" readonly>
+                            <input type="text" id="namawisata" class="form-control border border-2 rounded-3"
+                                value="{{ $tempat->nama_tempat }}" readonly>
                         </div>
 
                         <div class="col-md-12 mb-3">
                             <label for="deskripsi" class="form-label fw-semibold">Deskripsi</label>
-                            <div class="form-control border border-2 rounded-3" style="min-height:120px">{!! nl2br(e($tempat->deskripsi)) !!}</div>
+                            <div class="form-control border border-2 rounded-3" style="min-height:120px">
+                                {!! nl2br(e($tempat->deskripsi)) !!}</div>
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label for="harga" class="form-label fw-semibold">Harga Tiket</label>
-                            <input type="text" id="harga" class="form-control border border-2 rounded-3" value="{{ $tempat->tiket_masuk ? number_format($tempat->tiket_masuk,0,',','.') : 'Gratis' }}" readonly>
+                            <input type="text" id="harga" class="form-control border border-2 rounded-3"
+                                value="{{ $tempat->tiket_masuk ? number_format($tempat->tiket_masuk, 0, ',', '.') : 'Gratis' }}"
+                                readonly>
                         </div>
 
                         <div class="col-md-6 mb-3 d-flex align-items-end">
-                            <a href="https://www.google.com/maps/search/?api=1&query={{ $tempat->latitude }},{{ $tempat->longitude }}" target="_blank" class="filter-btn active w-100 py-2 text-center">Buka di Google Maps</a>
+                            <a href="https://www.google.com/maps/search/?api=1&query={{ $tempat->latitude }},{{ $tempat->longitude }}"
+                                target="_blank" class="filter-btn active w-100 py-2 text-center">Buka di Google
+                                Maps</a>
                         </div>
                     </div>
                 </div>
 
             </div>
 
+            {{-- === RATING RINGKAS === --}}
+            <div class="p-4 rounded-4 shadow-sm border mb-4">
+                <h4 class="mb-2 text-primary">Rating Pengunjung</h4>
+                @if ($reviewsCount)
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="fs-3 fw-bold">{{ $avgRating }}</div>
+                        <div>
+                            @for ($i = 1; $i <= 5; $i++)
+                                <i
+                                    class="bi {{ $i <= floor($avgRating) ? 'bi-star-fill text-warning' : ($i - 0.5 <= $avgRating ? 'bi-star-half text-warning' : 'bi-star text-warning') }}"></i>
+                            @endfor
+                            <div class="text-muted small">{{ $reviewsCount }} review</div>
+                        </div>
+                    </div>
+                @else
+                    <p class="text-muted mb-0">Belum ada review.</p>
+                @endif
+            </div>
+
+            {{-- === FORM REVIEW === --}}
+            <div class="p-4 rounded-4 shadow-sm border mb-5">
+                <h4 class="mb-3 text-primary">Tulis Review</h4>
+
+                @if (session('success'))
+                    <div class="alert alert-success">{{ session('success') }}</div>
+                @endif
+
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $e)
+                                <li>{{ $e }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <form method="POST" action="{{ route('wisata.reviews.store', $tempat) }}" class="row g-3">
+                    @csrf
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Nama</label>
+                        <input name="user_name" class="form-control" placeholder="Nama kamu"
+                            value="{{ old('user_name') }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Rating</label>
+                        <select name="rating" class="form-select" required>
+                            @for ($i = 5; $i >= 1; $i--)
+                                <option value="{{ $i }}" @selected(old('rating') == $i)>{{ $i }}
+                                    ★</option>
+                            @endfor
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">Komentar (opsional)</label>
+                        <textarea name="komentar" class="form-control" rows="3" placeholder="Tulis pengalamanmu...">{{ old('komentar') }}</textarea>
+                    </div>
+                    <div class="col-12">
+                        <button class="btn btn-primary rounded-pill px-4">Kirim Review</button>
+                    </div>
+                </form>
+            </div>
+
+            {{-- === LIST REVIEW === --}}
+            <div class="p-4 rounded-4 shadow-sm border">
+                <h4 class="mb-3 text-primary">Semua Review</h4>
+                @forelse($reviews as $r)
+                    <div class="border-bottom pb-3 mb-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <strong>{{ $r->user_name }}</strong>
+                            <small class="text-muted">{{ $r->created_at->format('d M Y') }}</small>
+                        </div>
+                        <div class="mb-1">
+                            @for ($i = 1; $i <= 5; $i++)
+                                <i
+                                    class="bi {{ $i <= $r->rating ? 'bi-star-fill text-warning' : 'bi-star text-warning' }}"></i>
+                            @endfor
+                        </div>
+                        @if ($r->komentar)
+                            <div class="text-muted">{!! nl2br(e($r->komentar)) !!}</div>
+                        @endif
+                    </div>
+                @empty
+                    <p class="text-muted mb-0">Belum ada review.</p>
+                @endforelse
+            </div>
+
 
             <!-- Tour Guide Section -->
-            @if(isset($rekomendasiGuides) && $rekomendasiGuides->count())
-<div class="tourguide-section p-4 rounded-4 shadow-sm border mt-5">
-  <h4 class="text-center text-primary fw-bold mb-4 border-bottom pb-2">
-    Tour Guide yang Disarankan (Spesialisasi: {{ ucfirst($tempat->kategori) }})
-  </h4>
-  <div class="row justify-content-center" id="tourGuideList">
-    @foreach($rekomendasiGuides as $g)
-      <div class="col-lg-3 col-md-4 col-sm-6 text-center mb-4">
-        <div class="tourguide-card p-3 shadow-sm rounded-4 border border-2">
-          <div class="guide-photo mb-3">
-            <img src="{{ $g->foto ? Storage::url($g->foto) : asset('assets/img/tourguide/default.jpg') }}"
-                 alt="{{ $g->nama }}"
-                 class="rounded-circle border border-3"
-                 style="width:100px;height:100px;object-fit:cover;">
-          </div>
-          <h5 class="fw-bold mb-1">{{ $g->nama }}</h5>
-          <p class="text-muted mb-2">Spesialis {{ ucfirst($g->spesialisasi) }}</p>
-          @php
-            // contoh rating statis; ganti dengan field rating kalau sudah ada
-            $stars = 4;
-          @endphp
-          <div class="rating mb-3">
-            @for($i=1;$i<=5;$i++)
-              <i class="bi {{ $i <= $stars ? 'bi-star-fill text-warning' : 'bi-star text-warning' }}"></i>
-            @endfor
-          </div>
-          <div class="d-flex justify-content-center gap-2">
-            <a href="{{ route('tourguide.public', $g->id) }}" class="btn btn-outline-primary btn-sm px-3">Detail</a>
+            @if (isset($rekomendasiGuides) && $rekomendasiGuides->count())
+                <div class="tourguide-section p-4 rounded-4 shadow-sm border mt-5">
+                    <h4 class="text-center text-primary fw-bold mb-4 border-bottom pb-2">
+                        Tour Guide yang Disarankan (Spesialisasi: {{ ucfirst($tempat->kategori) }})
+                    </h4>
+                    <div class="row justify-content-center" id="tourGuideList">
+                        @foreach ($rekomendasiGuides as $g)
+                            <div class="col-lg-3 col-md-4 col-sm-6 text-center mb-4">
+                                <div class="tourguide-card p-3 shadow-sm rounded-4 border border-2">
+                                    <div class="guide-photo mb-3">
+                                        <img src="{{ $g->foto ? Storage::url($g->foto) : asset('assets/img/tourguide/default.jpg') }}"
+                                            alt="{{ $g->nama }}" class="rounded-circle border border-3"
+                                            style="width:100px;height:100px;object-fit:cover;">
+                                    </div>
+                                    <h5 class="fw-bold mb-1">{{ $g->nama }}</h5>
+                                    <p class="text-muted mb-2">Spesialis {{ ucfirst($g->spesialisasi) }}</p>
+                                    @php
+                                        // contoh rating statis; ganti dengan field rating kalau sudah ada
+                                        $stars = 4;
+                                    @endphp
+                                    <div class="rating mb-3">
+                                        @for ($i = 1; $i <= 5; $i++)
+                                            <i
+                                                class="bi {{ $i <= $stars ? 'bi-star-fill text-warning' : 'bi-star text-warning' }}"></i>
+                                        @endfor
+                                    </div>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <a href="{{ route('tourguide.public', $g->id) }}"
+                                            class="btn btn-outline-primary btn-sm px-3">Detail</a>
 
-            <a href="https://wa.me/{{ preg_replace('/[^0-9]/','',$g->kontak) }}" target="_blank"
-               class="btn btn-success btn-sm px-3">Hubungi</a>
-          </div>
-        </div>
-      </div>
-    @endforeach
-  </div>
-</div>
-@endif
+                                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $g->kontak) }}"
+                                            target="_blank" class="btn btn-success btn-sm px-3">Hubungi</a>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
 
 
         </div>

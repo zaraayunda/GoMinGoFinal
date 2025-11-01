@@ -194,6 +194,116 @@
                             @endif
                         </div>
 
+                        {{-- ==== KALENDER KETERSEDIAAN ==== --}}
+                        <div class="p-4 rounded-4 shadow-sm border bg-white mt-4">
+                            <h4 class="fw-semibold mb-3 text-primary">
+                                <i class="bi bi-calendar-event me-2"></i> Kalender Ketersediaan
+                            </h4>
+                            <div id="guideCalendar"></div>
+                            <small class="text-muted d-block mt-2">
+                                <span class="badge bg-success me-1">&nbsp;</span> Available
+                                <span class="badge bg-danger ms-3 me-1">&nbsp;</span> Booked
+                                <span class="badge bg-secondary ms-3 me-1">&nbsp;</span> Blocked
+                            </small>
+                        </div>
+
+
+                        {{-- ==== REVIEW SECTION ==== --}}
+                        <div class="p-4 rounded-4 shadow-sm border bg-white mt-4">
+                            <h4 class="fw-semibold mb-3 text-primary">
+                                <i class="bi bi-stars me-2"></i>Ulasan Pengguna
+                            </h4>
+
+                            {{-- Ringkasan --}}
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="me-3">
+                                    <div class="fs-3 fw-bold">{{ $avgRating ?? 0 }}/5</div>
+                                    <div class="text-muted small">{{ $reviewsCount ?? 0 }} review</div>
+                                </div>
+                                <div>
+                                    @php $avg = (int) round($avgRating ?? 0); @endphp
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        <i
+                                            class="bi {{ $i <= $avg ? 'bi-star-fill text-warning' : 'bi-star text-warning' }}"></i>
+                                    @endfor
+                                </div>
+                            </div>
+
+                            {{-- Daftar review --}}
+                            @if (($reviews ?? collect())->count())
+                                <div class="list-group mb-4">
+                                    @foreach ($reviews as $rev)
+                                        <div class="list-group-item border-0 border-bottom px-0">
+                                            <div class="d-flex justify-content-between">
+                                                <strong>{{ $rev->user_name }}</strong>
+                                                <span
+                                                    class="text-muted small">{{ $rev->created_at->format('d M Y') }}</span>
+                                            </div>
+                                            <div class="mb-1">
+                                                @for ($i = 1; $i <= 5; $i++)
+                                                    <i
+                                                        class="bi {{ $i <= $rev->rating ? 'bi-star-fill text-warning' : 'bi-star text-warning' }}"></i>
+                                                @endfor
+                                            </div>
+                                            @if ($rev->komentar)
+                                                <p class="mb-2 text-muted">{{ $rev->komentar }}</p>
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <p class="text-muted">Belum ada review. Jadilah yang pertama!</p>
+                            @endif
+
+                            {{-- Form tambah review (publik) --}}
+                            <h5 class="fw-semibold mb-3">Tulis Review</h5>
+                            @if (session('success'))
+                                <div class="alert alert-success">{{ session('success') }}</div>
+                            @endif
+                            @if (session('error'))
+                                <div class="alert alert-danger">{{ session('error') }}</div>
+                            @endif
+                            @if ($errors->any())
+                                <div class="alert alert-danger">
+                                    <ul class="mb-0">
+                                        @foreach ($errors->all() as $e)
+                                            <li>{{ $e }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+
+                            <form method="POST" action="{{ route('tourguide.reviews.store', $guide->id) }}"
+                                class="row g-3">
+                                @csrf
+                                <div class="col-md-6">
+                                    <label class="form-label">Nama</label>
+                                    <input name="user_name" value="{{ old('user_name') }}" class="form-control"
+                                        placeholder="Nama kamu" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Rating</label>
+                                    <select name="rating" class="form-select" required>
+                                        @for ($i = 5; $i >= 1; $i--)
+                                            <option value="{{ $i }}" @selected(old('rating') == $i)>
+                                                {{ $i }}</option>
+                                        @endfor
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Komentar (opsional)</label>
+                                    <textarea name="komentar" rows="3" class="form-control" placeholder="Tulis pengalamanmu...">{{ old('komentar') }}</textarea>
+                                </div>
+                                <div class="col-12">
+                                    <button class="btn btn-primary rounded-pill px-4">
+                                        <i class="bi bi-send me-1"></i> Kirim Review
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+
+
                     </div>
                 </div>
             </div>
@@ -288,6 +398,40 @@
     <script src="{{ asset('assets/js/tiny-slider.js') }}"></script>
     <script src="{{ asset('assets/js/wow.min.js') }}"></script>
     <script src="{{ asset('assets/js/main.js') }}"></script>
+    {{-- FullCalendar CDN --}}
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const el = document.getElementById('guideCalendar');
+            if (!el) return;
+
+            const calendar = new FullCalendar.Calendar(el, {
+                initialView: 'dayGridMonth',
+                height: 'auto',
+                firstDay: 1,
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                events: {
+                    url: '{{ route('tourguide.schedules.json', $guide->id) }}',
+                    failure: () => alert('Gagal memuat jadwal'),
+                },
+                eventDidMount: function(info) {
+                    // tooltip sederhana
+                    const p = info.event.extendedProps || {};
+                    info.el.title = (info.event.title || '') +
+                        (p.location ? `\nLokasi: ${p.location}` : '') +
+                        (p.status ? `\nStatus: ${p.status}` : '') +
+                        (p.note ? `\nCatatan: ${p.note}` : '');
+                }
+            });
+            calendar.render();
+        });
+    </script>
+
 </body>
 
 </html>
