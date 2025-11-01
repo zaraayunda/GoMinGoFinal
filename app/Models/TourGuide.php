@@ -26,4 +26,7 @@ class TourGuide extends Model
     {
         return $this->hasMany(DetailTourGuide::class);
     }
+
+    public function scopeApproved($q) { return $q->where('status', 'approved'); }
+
 }

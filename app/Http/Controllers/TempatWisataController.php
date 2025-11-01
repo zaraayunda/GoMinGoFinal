@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TempatWisata;
+use App\Models\TourGuide;
 use App\Models\Photo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -353,14 +354,20 @@ class TempatWisataController extends Controller
      * Public detail page for a tourist spot (accessible from map)
      */
     public function publicShow($id)
-    {
-        $tempat = TempatWisata::with(['photos', 'reviews', 'user'])->findOrFail($id);
+{
+    $tempat = TempatWisata::with(['photos', 'reviews', 'user'])->findOrFail($id);
 
-        // Map photos to public URLs if present
-        $photos = $tempat->photos->map(function ($p) {
-            return $p->file_path ? Storage::url($p->file_path) : null;
-        })->filter()->values()->toArray();
+    // URL foto publik
+    $photos = $tempat->photos->map(fn($p) => $p->file_path ? Storage::url($p->file_path) : null)
+                              ->filter()->values()->toArray();
 
-        return view('user.detailwisata', compact('tempat', 'photos'));
-    }
+    // Rekomendasi guide: status approved dan spesialisasi == kategori tempat
+    $rekomendasiGuides = TourGuide::where('status', 'approved')
+        ->where('spesialisasi', $tempat->kategori) // 'alam' | 'kuliner' | 'budaya'
+        ->latest()
+        ->take(8)
+        ->get(['id','nama','spesialisasi','pengalaman','kontak','foto']);
+
+    return view('user.detailwisata', compact('tempat', 'photos', 'rekomendasiGuides'));
+}
 }
