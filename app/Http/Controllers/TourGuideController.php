@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Models\TourGuideReview;
 
 class TourGuideController extends Controller
 {
@@ -140,7 +141,7 @@ class TourGuideController extends Controller
                 if ($sertifikatFile) {
                     $filename = time() . '_' . Str::random(10) . '_' . $index . '.' . $sertifikatFile->getClientOriginalExtension();
                     $sertifikatPath = $sertifikatFile->storeAs('tour-guide/sertifikat', $filename, 'public');
-                    
+
                     DetailTourGuide::create([
                         'tour_guide_id' => $tourGuide->id,
                         'sertifikat' => $sertifikatPath,
@@ -237,7 +238,7 @@ class TourGuideController extends Controller
             if ($tourGuide->foto) {
                 Storage::disk('public')->delete($tourGuide->foto);
             }
-            
+
             $file = $request->file('foto');
             $filename = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
             $fotoPath = $file->storeAs('tour-guide/foto', $filename, 'public');
@@ -253,7 +254,7 @@ class TourGuideController extends Controller
                 $detail = DetailTourGuide::where('id', $detailId)
                     ->where('tour_guide_id', $tourGuide->id)
                     ->first();
-                
+
                 if ($detail) {
                     // Hapus file sertifikat jika ada
                     if ($detail->sertifikat) {
@@ -271,7 +272,7 @@ class TourGuideController extends Controller
                     $detail = DetailTourGuide::where('id', $detailId)
                         ->where('tour_guide_id', $tourGuide->id)
                         ->first();
-                    
+
                     if ($detail) {
                         $detail->update([
                             'bahasa' => $request->input('bahasa')[$index] ?? null,
@@ -303,7 +304,7 @@ class TourGuideController extends Controller
                 if ($sertifikatFile) {
                     $filename = time() . '_' . Str::random(10) . '_' . $index . '.' . $sertifikatFile->getClientOriginalExtension();
                     $sertifikatPath = $sertifikatFile->storeAs('tour-guide/sertifikat', $filename, 'public');
-                    
+
                     DetailTourGuide::create([
                         'tour_guide_id' => $tourGuide->id,
                         'sertifikat' => $sertifikatPath,
@@ -346,66 +347,75 @@ class TourGuideController extends Controller
             ->with('success', 'Profil tour guide berhasil dihapus!');
     }
 
-public function publicShow($id)
-{
-    $guide = TourGuide::with('detailTourGuides')->findOrFail($id);
+    public function publicShow($id)
+    {
+        $guide = TourGuide::with(['detailTourGuides', 'reviews' => function ($q) {
+            $q->latest(); // urut terbaru
+        }])->findOrFail($id);
 
-    // Foto -> URL publik
-    $foto = $guide->foto ?? null;
-    if ($foto && !preg_match('#^https?://#i', $foto)) {
-        $foto = Storage::url($foto);
+        // Foto -> URL publik
+        $foto = $guide->foto ?? null;
+        if ($foto && !preg_match('#^https?://#i', $foto)) {
+            $foto = Storage::url($foto);
+        }
+        $guide->foto_url = $foto ?: asset('assets/img/tourguide/default.png');
+
+        // Format WA
+        $hp = preg_replace('/\D+/', '', (string)($guide->kontak ?? ''));
+        if ($hp && substr($hp, 0, 1) === '0') $hp = '62' . substr($hp, 1);
+        $guide->wa_link = $hp ? "https://wa.me/{$hp}" : null;
+
+        // Ringkasan detail
+        $bahasa     = optional($guide->detailTourGuides)->pluck('bahasa')->filter()->unique()->values();
+        $sertifikat = optional($guide->detailTourGuides)->pluck('sertifikat_nama')->filter()->unique()->values();
+
+        // === Ringkasan review
+        $avgRating    = round((float) $guide->reviews()->avg('rating'), 1);
+        $reviewsCount = (int) $guide->reviews()->count();
+
+        return view('user.tourguide-detail', [
+            'guide'        => $guide,
+            'bahasa'       => $bahasa,
+            'sertifikat'   => $sertifikat,
+            'avgRating'    => $avgRating,
+            'reviewsCount' => $reviewsCount,
+            'reviews'      => $guide->reviews, // sudah di-eager load
+        ]);
     }
-    $guide->foto_url = $foto ?: asset('assets/img/tourguide/default.png');
-
-    // Format WA
-    $hp = preg_replace('/\D+/', '', (string)($guide->kontak ?? ''));
-    if ($hp && substr($hp,0,1) === '0') $hp = '62'.substr($hp,1);
-    $guide->wa_link = $hp ? "https://wa.me/{$hp}" : null;
-
-    // Ambil ringkasan detail (bahasa, sertifikat) kalau tabel detail_tour_guides ada
-    $bahasa    = optional($guide->detailTourGuides)->pluck('bahasa')->filter()->unique()->values();
-    $sertifikat= optional($guide->detailTourGuides)->pluck('sertifikat_nama')->filter()->unique()->values();
-
-    return view('user.tourguide-detail', [
-        'guide'      => $guide,
-        'bahasa'     => $bahasa,
-        'sertifikat' => $sertifikat,
-    ]);
-}
 
 
-public function publicIndex(\Illuminate\Http\Request $r)
-{
-    $q   = trim((string)$r->query('q', ''));                   // pencarian nama
-    $sp  = strtolower((string)$r->query('spesialisasi', '')); // alam|kuliner|budaya|''
+    public function publicIndex(\Illuminate\Http\Request $r)
+    {
+        $q   = trim((string)$r->query('q', ''));                   // pencarian nama
+        $sp  = strtolower((string)$r->query('spesialisasi', '')); // alam|kuliner|budaya|''
 
-    $guides = TourGuide::query()
-        ->whereIn('status', ['approved','aktif','active'])
-        ->when($q, fn($x)=>$x->where('nama','like',"%{$q}%"))
-        ->when(in_array($sp, ['alam','kuliner','budaya']), 
-               fn($x)=>$x->where('spesialisasi',$sp))
-        ->latest()
-        ->paginate(12)     // pagination
-        ->withQueryString();
+        $guides = TourGuide::query()
+            ->whereIn('status', ['approved', 'aktif', 'active'])
+            ->when($q, fn($x) => $x->where('nama', 'like', "%{$q}%"))
+            ->when(
+                in_array($sp, ['alam', 'kuliner', 'budaya']),
+                fn($x) => $x->where('spesialisasi', $sp)
+            )
+            ->latest()
+            ->paginate(12)     // pagination
+            ->withQueryString();
 
-    // map foto & wa
-    $guides->getCollection()->transform(function($g){
-        $foto = $g->foto ?? null;
-        if ($foto && !preg_match('#^https?://#i', $foto)) $foto = Storage::url($foto);
-        $g->foto_url = $foto ?: asset('assets/img/tourguide/default.png');
+        // map foto & wa
+        $guides->getCollection()->transform(function ($g) {
+            $foto = $g->foto ?? null;
+            if ($foto && !preg_match('#^https?://#i', $foto)) $foto = Storage::url($foto);
+            $g->foto_url = $foto ?: asset('assets/img/tourguide/default.png');
 
-        $hp = preg_replace('/\D+/', '', (string)($g->kontak ?? ''));
-        if ($hp && $hp[0]==='0') $hp = '62'.substr($hp,1);
-        $g->wa_link = $hp ? "https://wa.me/{$hp}" : null;
-        return $g;
-    });
+            $hp = preg_replace('/\D+/', '', (string)($g->kontak ?? ''));
+            if ($hp && $hp[0] === '0') $hp = '62' . substr($hp, 1);
+            $g->wa_link = $hp ? "https://wa.me/{$hp}" : null;
+            return $g;
+        });
 
-    return view('user.tourguide', [
-        'guides' => $guides,
-        'sp'     => $sp,
-        'q'      => $q,
-    ]);
-}
-
-
+        return view('user.tourguide', [
+            'guides' => $guides,
+            'sp'     => $sp,
+            'q'      => $q,
+        ]);
+    }
 }

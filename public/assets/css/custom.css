@@ -1,174 +1,191 @@
 .about-section {
-  position: relative;
-  overflow: hidden;
+    position: relative;
+    overflow: hidden;
 }
 
 /* overlay putih + efek blur */
 .about-section::before {
-  content: "";
-  position: absolute;
-  inset: 0; /* top, right, bottom, left semuanya 0 */
-  background-color: rgba(255, 255, 255, 0.6); /* putih semi-transparan */
-  backdrop-filter: blur(5px); /* bikin background agak blur */
-  z-index: 0;
+    content: "";
+    position: absolute;
+    inset: 0; /* top, right, bottom, left semuanya 0 */
+    background-color: rgba(255, 255, 255, 0.6); /* putih semi-transparan */
+    backdrop-filter: blur(5px); /* bikin background agak blur */
+    z-index: 0;
 }
 
 /* pastikan isi teks tetap di atas overlay */
 .about-section .container {
-  position: relative;
-  z-index: 1;
+    position: relative;
+    z-index: 1;
 }
+
+.about-section {
+    background: linear-gradient(to bottom right, #f8faff, #ffffff);
+}
+
+.about-content-wrapper p {
+    line-height: 1.7;
+}
+
+.about-icon-wrapper i {
+    transition: transform 0.4s ease;
+}
+
+.about-icon-wrapper:hover i {
+    transform: scale(1.1) rotate(-5deg);
+}
+
 .katalog-wisata-section {
-  background: #f9fafc;
+    background: #f9fafc;
 }
 
 .single-pricing-wrapper {
-  transition: all 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .single-pricing {
-  background: #fff;
-  border-radius: 20px;
-  padding: 25px;
-  text-align: center;
-  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+    background: #fff;
+    border-radius: 20px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
 }
 
 .single-pricing:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
+    transform: translateY(-8px);
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
 }
 
 .img-wrapper {
-  width: 100%;
-  height: 180px;
-  overflow: hidden;
-  border-radius: 15px;
-  margin-bottom: 15px;
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    border-radius: 15px;
+    margin-bottom: 15px;
 }
 
 .img-wrapper img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: 0.3s;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: 0.3s;
 }
 
 .single-pricing:hover img {
-  transform: scale(1.05);
+    transform: scale(1.05);
 }
 
 .single-pricing h4 {
-  font-size: 20px;
-  margin-top: 10px;
-  color: #222;
-  font-weight: 600;
+    font-size: 20px;
+    margin-top: 10px;
+    color: #222;
+    font-weight: 600;
 }
 
 .single-pricing p {
-  color: #777;
-  font-size: 14px;
-  margin-bottom: 15px;
+    color: #777;
+    font-size: 14px;
+    margin-bottom: 15px;
 }
 
 .single-pricing ul {
-  list-style: none;
-  padding: 0;
-  margin-bottom: 20px;
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
 }
 
 .single-pricing ul li {
-  font-size: 14px;
-  color: #555;
-  margin-bottom: 6px;
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 6px;
 }
 
 .button.radius-30 {
-  background: linear-gradient(135deg, #8a2be2, #5c4ee5);
-  color: #fff;
-  padding: 10px 25px;
-  border-radius: 30px;
-  text-decoration: none;
-  transition: 0.3s;
+    background: linear-gradient(135deg, #8a2be2, #5c4ee5);
+    color: #fff;
+    padding: 10px 25px;
+    border-radius: 30px;
+    text-decoration: none;
+    transition: 0.3s;
 }
 
 .button.radius-30:hover {
-  background: linear-gradient(135deg, #6d1ed2, #473dd9);
+    background: linear-gradient(135deg, #6d1ed2, #473dd9);
 }
 .filter-btn {
-  border: none;
-  background: #f0f0ff;
-  color: #4c4cff;
-  padding: 10px 25px;
-  margin: 5px;
-  border-radius: 30px;
-  cursor: pointer;
-  transition: 0.3s;
+    border: none;
+    background: #f0f0ff;
+    color: #4c4cff;
+    padding: 10px 25px;
+    margin: 5px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
 .filter-btn.active,
 .filter-btn:hover {
-  background: #6c63ff;
-  color: #fff;
+    background: #6c63ff;
+    color: #fff;
 }
 
 .wisata-item {
-  transition: all 0.4s ease;
+    transition: all 0.4s ease;
 }
 
 .single-pricing {
-  background: #fff;
-  border-radius: 20px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-  text-align: center;
-  padding: 20px;
-  transition: all 0.3s ease;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    padding: 20px;
+    transition: all 0.3s ease;
 }
 
 .single-pricing:hover {
-  transform: translateY(-5px);
+    transform: translateY(-5px);
 }
 
 .img-wrapper {
-  overflow: hidden;
-  border-radius: 15px;
-  margin-bottom: 15px;
+    overflow: hidden;
+    border-radius: 15px;
+    margin-bottom: 15px;
 }
 
 .img-wrapper img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  transition: transform 0.4s ease;
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.4s ease;
 }
 
 .img-wrapper img:hover {
-  transform: scale(1.05);
+    transform: scale(1.05);
 }
 
 #tourGuideList img {
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
-  border-radius: 50%; /* opsional biar bulat */
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%; /* opsional biar bulat */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 .tourguide-card {
-      transition: 0.3s ease;
+    transition: 0.3s ease;
 }
 .tourguide-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
 .guide-photo img {
-      width: 120px;
-      height: 120px;
-      object-fit: cover;
-      border: 3px solid #f0f0f0;
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border: 3px solid #f0f0f0;
 }
 .rating i {
-      font-size: 1.1rem;
+    font-size: 1.1rem;
 }
 
 .tg-card:hover {
@@ -176,113 +193,537 @@
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
 }
 .map-stage {
-            position: relative;
-            padding: 24px;
-            background: radial-gradient(1200px 600px at 10% -20%, #e6f0ff 0%, #ffffff 35%) no-repeat;
-        }
+    position: relative;
+    padding: 24px;
+    background: radial-gradient(
+            1200px 600px at 10% -20%,
+            #e6f0ff 0%,
+            #ffffff 35%
+        )
+        no-repeat;
+}
 
-        #map {
-            height: 72vh;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(12, 39, 77, .18);
-            overflow: hidden;
-        }
+#map {
+    height: 72vh;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(12, 39, 77, 0.18);
+    overflow: hidden;
+}
 
-        /* Header above map and floating controls should sit above other content */
-        .header {
-            position: relative;
-            z-index: 1100;
-        }
+/* Header above map and floating controls should sit above other content */
+.header {
+    position: relative;
+    z-index: 1100;
+}
 
-        /* Improve mobile map sizing and touchability */
-        @media (max-width: 768px) {
-            #map {
-                height: 55vh;
-                border-radius: 12px;
-            }
+/* Improve mobile map sizing and touchability */
+@media (max-width: 768px) {
+    #map {
+        height: 55vh;
+        border-radius: 12px;
+    }
 
-            .map-floating {
-                right: 16px;
-                top: 16px;
-                gap: 8px;
-            }
+    .map-floating {
+        right: 16px;
+        top: 16px;
+        gap: 8px;
+    }
 
-            .map-stage {
-                padding: 16px;
-            }
-        }
+    .map-stage {
+        padding: 16px;
+    }
+}
 
-        /* Floating controls */
-        .map-floating {
-            position: absolute;
-            right: 32px;
-            top: 32px;
-            z-index: 1000;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
+/* Floating controls */
+.map-floating {
+    position: absolute;
+    right: 32px;
+    top: 32px;
+    z-index: 1000;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
 
-        .glass {
-            backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, .7);
-            border: 1px solid rgba(255, 255, 255, .6);
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
-        }
+.glass {
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
 
-        .btn-chip {
-            padding: 10px 14px;
-            border: 0;
-            border-radius: 999px;
-            cursor: pointer;
-            font-weight: 600;
-        }
+.btn-chip {
+    padding: 10px 14px;
+    border: 0;
+    border-radius: 999px;
+    cursor: pointer;
+    font-weight: 600;
+}
 
-        .btn-chip:hover {
-            filter: brightness(.95);
-        }
+.btn-chip:hover {
+    filter: brightness(0.95);
+}
 
-        .btn-primary-soft {
-            background: #eef4ff;
-            color: #2448ff;
-        }
+.btn-primary-soft {
+    background: #eef4ff;
+    color: #2448ff;
+}
 
-        .btn-dark-soft {
-            background: #f2f2f2;
-            color: #111;
-        }
+.btn-dark-soft {
+    background: #f2f2f2;
+    color: #111;
+}
 
-        .btn-outline {
-            background: #fff;
-            border: 1px solid #e5e7eb;
-        }
+.btn-outline {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+}
 
-        /* Popup modern */
-        .leaflet-popup-content {
-            margin: 10px 12px;
-        }
+/* Popup modern */
+.leaflet-popup-content {
+    margin: 10px 12px;
+}
 
-        .pop-title {
-            font-weight: 800;
-            font-size: 1.05rem;
-            margin-bottom: 2px;
-        }
+.pop-title {
+    font-weight: 800;
+    font-size: 1.05rem;
+    margin-bottom: 2px;
+}
 
-        .pop-sub {
-            color: #6b7280;
-            font-size: .9rem;
-            margin-bottom: 6px;
-        }
+.pop-sub {
+    color: #6b7280;
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+}
 
-        .pop-img {
-            width: 100%;
-            border-radius: 12px;
-            margin-top: 6px;
-        }
+.pop-img {
+    width: 100%;
+    border-radius: 12px;
+    margin-top: 6px;
+}
 
-        .pop-action {
-            display: inline-block;
-            margin-top: 8px;
-        }
-   
+.pop-action {
+    display: inline-block;
+    margin-top: 8px;
+}
+
+body {
+    background: linear-gradient(180deg, #dfefff, #ffffff);
+    font-family: "Poppins", sans-serif;
+    overflow-x: hidden;
+}
+
+/* Navbar */
+/* Navbar Styling */
+.navbar {
+    padding: 0.8rem 0;
+    transition: all 0.3s ease;
+}
+
+.navbar .nav-link {
+    font-weight: 500;
+    color: #333 !important;
+    margin: 0 12px;
+    transition: color 0.3s;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
+    color: #007bff !important;
+}
+
+.navbar .btn-primary {
+    background-color: #007bff;
+    border: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.navbar .btn-primary:hover {
+    background-color: #0056b3;
+}
+
+/* Hero Carousel */
+.hero-carousel {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.carousel-item {
+    height: 100vh;
+    min-height: 500px;
+    background-position: center;
+    background-size: cover;
+    transition: opacity 1.2s ease-in-out;
+}
+
+.carousel-item::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 40, 80, 0.45);
+    backdrop-filter: blur(3px);
+}
+
+.carousel-caption {
+    bottom: 35%;
+    z-index: 2;
+}
+
+.carousel-caption h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    text-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+}
+
+.carousel-caption p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.btn-glass {
+    background: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: #fff;
+    backdrop-filter: blur(8px);
+    border-radius: 30px;
+    padding: 10px 25px;
+    transition: all 0.3s;
+}
+
+.btn-glass:hover {
+    background: rgba(255, 255, 255, 0.5);
+    color: #002850;
+}
+
+/* Section Title */
+.section-title {
+    text-align: center;
+    margin-bottom: 3rem;
+    color: #002850;
+    font-weight: 600;
+}
+
+/* === Kenapa Pilih Kami === */
+.kenapa-section {
+    text-align: center;
+    padding: 80px 20px;
+    background: linear-gradient(to bottom, #eef5ff, #ffffff);
+}
+
+.kenapa-title {
+    font-size: 2.2em;
+    font-weight: 700;
+    margin-bottom: 50px;
+    color: #1a237e;
+    position: relative;
+}
+
+.kenapa-title::after {
+    content: "";
+    width: 80px;
+    height: 4px;
+    background-color: #1a237e;
+    display: block;
+    margin: 15px auto 0;
+    border-radius: 10px;
+}
+
+.kenapa-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+}
+
+.kenapa-card {
+    background: white;
+    width: 250px;
+    padding: 30px 20px;
+    border-radius: 20px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    opacity: 0;
+    transform: translateY(40px);
+}
+
+.kenapa-card.show {
+    opacity: 1;
+    transform: translateY(0);
+    animation: bounceIn 1s ease;
+}
+
+.kenapa-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.kenapa-icon {
+    font-size: 2.8em;
+    color: #3f51b5;
+    margin-bottom: 20px;
+}
+
+.kenapa-card h3 {
+    font-size: 1.3em;
+    margin-bottom: 10px;
+    color: #212121;
+}
+
+.kenapa-card p {
+    font-size: 0.95em;
+    color: #555;
+    line-height: 1.5;
+}
+
+@keyframes bounceIn {
+    0% {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    60% {
+        transform: translateY(-15px);
+        opacity: 1;
+    }
+    80% {
+        transform: translateY(5px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+/* === Tur Populer 3D Carousel === */
+.tour-slider {
+    position: relative;
+    height: 380px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1000px;
+}
+
+.tour-item {
+    position: absolute;
+    width: 250px;
+    height: 330px;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 1s ease;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+}
+
+.tour-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+}
+
+.tour-item .info {
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    text-align: center;
+    color: #fff;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.tour-item.active {
+    transform: translateX(0) scale(1.1);
+    z-index: 3;
+    opacity: 1;
+}
+
+.tour-item.left {
+    transform: translateX(-250px) scale(0.8) rotateY(20deg);
+    opacity: 0.8;
+    z-index: 2;
+}
+
+.tour-item.right {
+    transform: translateX(250px) scale(0.8) rotateY(-20deg);
+    opacity: 0.8;
+    z-index: 2;
+}
+
+.tour-item.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+footer {
+    background: #002850;
+    color: #fff;
+    padding: 40px 0;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .kenapa-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .tour-item {
+        width: 200px;
+        height: 270px;
+    }
+    .tour-item.left {
+        transform: translateX(-180px) scale(0.8);
+    }
+    .tour-item.right {
+        transform: translateX(180px) scale(0.8);
+    }
+}
+
+.carousel-item {
+    transition: transform 1s ease, opacity 1s ease;
+}
+
+.carousel-caption {
+    background: rgba(0, 0, 0, 0.35);
+    padding: 20px 40px;
+    border-radius: 15px;
+}
+
+.btn-glass,
+.btn-light {
+    backdrop-filter: blur(5px);
+    background: rgba(255, 255, 255, 0.25);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s;
+}
+
+.btn-glass:hover,
+.btn-light:hover {
+    background: rgba(255, 255, 255, 0.5);
+    color: #000;
+}
+
+/* Efek hover ikon peta */
+.lni-map-marker:hover {
+    transform: scale(1.1);
+    color: #ffb703; /* kuning keemasan */
+}
+
+/* Styling tombol utama */
+.button {
+    background: linear-gradient(90deg, #007bff, #0056b3);
+    color: #fff !important;
+    border: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.button:hover {
+    background: linear-gradient(90deg, #0056b3, #007bff);
+    transform: translateY(-2px);
+}
+
+/* Penyesuaian tampilan teks */
+.about-section p {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.about-section h3 {
+    font-size: 2rem;
+}
+
+/* ================= HERO SECTION ================= */
+.hero-section {
+    position: relative;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+}
+
+.hero-section .hero-content h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.hero-section .hero-content .highlight {
+    color: var(--warm);
+}
+
+.hero-section .hero-content p {
+    margin: 20px 0 40px;
+    font-size: 1.1rem;
+}
+
+.hero-section .btn-primary {
+    background: var(--warm);
+    color: #fff;
+    border: none;
+    font-weight: 600;
+    padding: 14px 36px;
+    border-radius: 50px;
+    transition: all 0.4s ease;
+}
+
+.hero-section .btn-primary:hover {
+    transform: translateY(-5px);
+    background: var(--nature);
+}
+
+/* Floating elements animation */
+.floating-elements img {
+    position: absolute;
+    opacity: 0.9;
+}
+
+.floating-elements i {
+    position: absolute;
+    font-size: 100px;
+    opacity: 0.9;
+}
+
+.cloud1 {
+    top: 20%;
+    left: 10%;
+    animation: float 6s ease-in-out infinite;
+}
+
+.cloud2 {
+    top: 30%;
+    right: 15%;
+    animation: float 8s ease-in-out infinite;
+}
+
+.mountain {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+}
+
+/* Wave SVG bawah hero */
+.hero-wave {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
+/* Animasi melayang lembut */
+@keyframes float {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}

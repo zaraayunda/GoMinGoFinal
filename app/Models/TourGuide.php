@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -27,6 +28,28 @@ class TourGuide extends Model
         return $this->hasMany(DetailTourGuide::class);
     }
 
-    public function scopeApproved($q) { return $q->where('status', 'approved'); }
+    public function scopeApproved($q)
+    {
+        return $q->where('status', 'approved');
+    }
 
+    public function invitations()
+    {
+        return $this->hasMany(\App\Models\EventInvitation::class);
+    }
+    public function registrations()
+    {
+        return $this->hasMany(\App\Models\EventRegistration::class);
+    }
+
+    // app/Models/TourGuide.php
+    public function reviews()
+    {
+        return $this->hasMany(\App\Models\TourGuideReview::class);
+    }
+
+    public function schedules()
+    {
+        return $this->hasMany(\App\Models\TourGuideSchedule::class);
+    }
 }
