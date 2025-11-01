@@ -1,35 +1,27 @@
-/* ===============================
-   SECTION: ABOUT
-================================ */
 .about-section {
   position: relative;
   overflow: hidden;
 }
 
+/* overlay putih + efek blur */
 .about-section::before {
   content: "";
   position: absolute;
-  inset: 0;
-  background-color: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(5px);
+  inset: 0; /* top, right, bottom, left semuanya 0 */
+  background-color: rgba(255, 255, 255, 0.6); /* putih semi-transparan */
+  backdrop-filter: blur(5px); /* bikin background agak blur */
   z-index: 0;
 }
 
+/* pastikan isi teks tetap di atas overlay */
 .about-section .container {
   position: relative;
   z-index: 1;
 }
-
-/* ===============================
-   SECTION: KATALOG WISATA
-================================ */
 .katalog-wisata-section {
   background: #f9fafc;
 }
 
-/* ===============================
-   CARD UTAMA WISATA
-================================ */
 .single-pricing-wrapper {
   transition: all 0.3s ease;
 }
@@ -39,19 +31,18 @@
   border-radius: 20px;
   padding: 25px;
   text-align: center;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
 }
 
 .single-pricing:hover {
-  transform: translateY(-5px);
+  transform: translateY(-8px);
   box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
 }
 
-/* Gambar di dalam kartu */
 .img-wrapper {
   width: 100%;
-  height: 200px;
+  height: 180px;
   overflow: hidden;
   border-radius: 15px;
   margin-bottom: 15px;
@@ -61,16 +52,13 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.4s ease;
+  transition: 0.3s;
 }
 
 .single-pricing:hover img {
   transform: scale(1.05);
 }
 
-/* ===============================
-   TEKS DALAM CARD
-================================ */
 .single-pricing h4 {
   font-size: 20px;
   margin-top: 10px;
@@ -96,9 +84,6 @@
   margin-bottom: 6px;
 }
 
-/* ===============================
-   TOMBOL & FILTER
-================================ */
 .button.radius-30 {
   background: linear-gradient(135deg, #8a2be2, #5c4ee5);
   color: #fff;
@@ -111,7 +96,6 @@
 .button.radius-30:hover {
   background: linear-gradient(135deg, #6d1ed2, #473dd9);
 }
-
 .filter-btn {
   border: none;
   background: #f0f0ff;
@@ -129,118 +113,60 @@
   color: #fff;
 }
 
-/* ===============================
-   TOUR GUIDE SECTION
-================================ */
+.wisata-item {
+  transition: all 0.4s ease;
+}
+
+.single-pricing {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  text-align: center;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.single-pricing:hover {
+  transform: translateY(-5px);
+}
+
+.img-wrapper {
+  overflow: hidden;
+  border-radius: 15px;
+  margin-bottom: 15px;
+}
+
+.img-wrapper img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.img-wrapper img:hover {
+  transform: scale(1.05);
+}
+
 #tourGuideList img {
   width: 120px;
   height: 120px;
   object-fit: cover;
-  border-radius: 50%;
+  border-radius: 50%; /* opsional biar bulat */
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
-
 .tourguide-card {
-  border-radius: 25px;
-  transition: all 0.3s ease;
+      transition: 0.3s ease;
 }
-
 .tourguide-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-  border-color: #007bff;
-  background-color: #f8f9ff;
+      transform: translateY(-5px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
-
 .guide-photo img {
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
-  border: 3px solid #f0f0f0;
-  border-radius: 50%;
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border: 3px solid #f0f0f0;
 }
-
 .rating i {
-  font-size: 1.1rem;
+      font-size: 1.1rem;
 }
-
-/* ===============================
-   DETAIL WISATA CARD
-================================ */
-.wisata-detail-card,
-.tourguide-section {
-  background-color: #ffffff;
-  border: 2px solid #e0e0e0;
-  border-radius: 25px;
-}
-
-/* ===============================
-   FORM & ELEMEN TAMBAHAN
-================================ */
-.form-control[readonly],
-textarea[readonly] {
-  background-color: #f9f9f9;
-  border-radius: 15px;
-}
-
-img.rounded-5 {
-  border-radius: 20px !important;
-}
-
-.border-bottom {
-  border-bottom: 2px solid #007bff !important;
-}
-
-
-/* Hapus area besar default tombol carousel */
-.carousel-control-prev,
-.carousel-control-next {
-  width: auto !important;
-  height: auto !important;
-  background: none !important;
-  opacity: 1 !important;
-}
-
-/* Tombol bulat kecil yang sebenarnya */
-.custom-control {
-  width: 45px;
-  height: 45px;
-  border: none;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  transition: all 0.3s ease;
-  z-index: 10; /* pastikan di atas gambar */
-}
-
-/* Hover effect */
-.custom-control:hover {
-  background-color: #3b82f6;
-  color: #fff;
-  transform: translateY(-50%) scale(1.1);
-}
-
-/* Posisi kiri dan kanan */
-.carousel-control-prev.custom-control { left: 15px; }
-.carousel-control-next.custom-control { right: 15px; }
-
-/* Ikon panah */
-.custom-prev-icon,
-.custom-next-icon {
-  font-size: 20px;
-  font-weight: bold;
-  color: #333;
-  transition: color 0.3s ease;
-}
-
-.custom-control:hover .custom-prev-icon,
-.custom-control:hover .custom-next-icon {
-  color: #fff;
-}
-
