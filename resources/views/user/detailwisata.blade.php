@@ -168,36 +168,44 @@
 
 
             <!-- Tour Guide Section -->
-            <div class="tourguide-section p-4 rounded-4 shadow-sm border">
-                <h4 class="text-center text-primary fw-bold mb-4 border-bottom pb-2">Tour Guide yang Disarankan</h4>
-                <div class="row justify-content-center" id="tourGuideList">
+            @if(isset($rekomendasiGuides) && $rekomendasiGuides->count())
+<div class="tourguide-section p-4 rounded-4 shadow-sm border mt-5">
+  <h4 class="text-center text-primary fw-bold mb-4 border-bottom pb-2">
+    Tour Guide yang Disarankan (Spesialisasi: {{ ucfirst($tempat->kategori) }})
+  </h4>
+  <div class="row justify-content-center" id="tourGuideList">
+    @foreach($rekomendasiGuides as $g)
+      <div class="col-lg-3 col-md-4 col-sm-6 text-center mb-4">
+        <div class="tourguide-card p-3 shadow-sm rounded-4 border border-2">
+          <div class="guide-photo mb-3">
+            <img src="{{ $g->foto ? Storage::url($g->foto) : asset('assets/img/tourguide/default.jpg') }}"
+                 alt="{{ $g->nama }}"
+                 class="rounded-circle border border-3"
+                 style="width:100px;height:100px;object-fit:cover;">
+          </div>
+          <h5 class="fw-bold mb-1">{{ $g->nama }}</h5>
+          <p class="text-muted mb-2">Spesialis {{ ucfirst($g->spesialisasi) }}</p>
+          @php
+            // contoh rating statis; ganti dengan field rating kalau sudah ada
+            $stars = 4;
+          @endphp
+          <div class="rating mb-3">
+            @for($i=1;$i<=5;$i++)
+              <i class="bi {{ $i <= $stars ? 'bi-star-fill text-warning' : 'bi-star text-warning' }}"></i>
+            @endfor
+          </div>
+          <div class="d-flex justify-content-center gap-2">
+            <a href="{{ url('/tourguide/'.$g->id) }}" class="btn btn-outline-primary btn-sm px-3">Detail</a>
+            <a href="https://wa.me/{{ preg_replace('/[^0-9]/','',$g->kontak) }}" target="_blank"
+               class="btn btn-success btn-sm px-3">Hubungi</a>
+          </div>
+        </div>
+      </div>
+    @endforeach
+  </div>
+</div>
+@endif
 
-                    <!-- Kartu Tour Guide -->
-                    <div class="col-lg-3 col-md-4 col-sm-6 text-center mb-4">
-                        <div class="tourguide-card p-3 shadow-sm rounded-4 border border-2">
-                            <div class="guide-photo mb-3">
-                                <img src="{{ asset('assets/img/tourguide/foto1.jpeg') }}" alt="Budi"
-                                    class="rounded-circle border border-3"
-                                    style="width: 100px; height: 100px; object-fit: cover;">
-                            </div>
-                            <h5 class="fw-bold mb-1">Budi</h5>
-                            <p class="text-muted mb-2">Spesialis Wisata Alam</p>
-                            <div class="rating mb-3">
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star text-warning"></i>
-                            </div>
-                            <div class="d-flex justify-content-center gap-2">
-                                <a href="#0" class="btn btn-outline-primary btn-sm px-3">Detail</a>
-                                <a href="https://wa.me/6281234567890" target="_blank"
-                                    class="btn btn-success btn-sm px-3">Hubungi</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
         </div>
     </section>
