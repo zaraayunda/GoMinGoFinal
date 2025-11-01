@@ -3,12 +3,16 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\TempatWisataController;
+use App\Http\Controllers\TourGuideController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-// Auth Routes
+// ==========================
+// 🔐 AUTHENTICATION ROUTES
+// ==========================
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
@@ -27,15 +31,36 @@ Route::middleware('auth')->group(function () {
         }
         return view('layout.dashboard');
     })->name('dashboard');
+
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    // Tempat Wisata Routes
-    Route::get('/tempat-wisata/dashboard', [\App\Http\Controllers\TempatWisataController::class, 'dashboard'])->name('tempat-wisata.dashboard');
-    Route::resource('tempat-wisata', \App\Http\Controllers\TempatWisataController::class);
-    Route::delete('tempat-wisata/photo/{photo}', [\App\Http\Controllers\TempatWisataController::class, 'deletePhoto'])
+    // ==========================
+    // 🏞️ TEMPAT WISATA ROUTES
+    // ==========================
+    Route::get('/tempat-wisata/dashboard', [TempatWisataController::class, 'dashboard'])->name('tempat-wisata.dashboard');
+    Route::resource('tempat-wisata', TempatWisataController::class);
+    Route::delete('tempat-wisata/photo/{photo}', [TempatWisataController::class, 'deletePhoto'])
         ->name('tempat-wisata.photo.delete');
 
-    // Tour Guide Routes
-    Route::get('/tour-guide/dashboard', [\App\Http\Controllers\TourGuideController::class, 'dashboard'])->name('tour-guide.dashboard');
-    Route::resource('tour-guide', \App\Http\Controllers\TourGuideController::class);
+    // ==========================
+    // 🧭 TOUR GUIDE ROUTES
+    // ==========================
+    Route::get('/tour-guide/dashboard', [TourGuideController::class, 'dashboard'])->name('tour-guide.dashboard');
+    Route::resource('tour-guide', TourGuideController::class);
+});
+
+// ==========================
+// 🌍 USER-FACING PAGES
+// ==========================
+Route::get('/peta', function () {
+    return view('user.peta');
+});
+Route::get('/detailwisata', function () {
+    return view('user.detailwisata');
+});
+Route::get('/tourguide', function () {
+    return view('user.tourguide');
+});
+Route::get('/event', function () {
+    return view('user.event');
 });
