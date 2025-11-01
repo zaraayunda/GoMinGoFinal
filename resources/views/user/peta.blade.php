@@ -20,125 +20,12 @@
     <link rel="stylesheet" href="{{ asset('assets/css/lindy-uikit.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/custom.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/map-styles.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/custom.css') }}" />
     <!-- Leaflet core + addons -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.fullscreen@2.4.0/Control.FullScreen.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
-
-    <style>
-        /* Container hero jadi “map stage” modern */
-        .map-stage {
-            position: relative;
-            padding: 24px;
-            background: radial-gradient(1200px 600px at 10% -20%, #e6f0ff 0%, #ffffff 35%) no-repeat;
-        }
-
-        #map {
-            height: 72vh;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(12, 39, 77, .18);
-            overflow: hidden;
-        }
-
-        /* Header above map and floating controls should sit above other content */
-        .header {
-            position: relative;
-            z-index: 1100;
-        }
-
-        /* Improve mobile map sizing and touchability */
-        @media (max-width: 768px) {
-            #map {
-                height: 55vh;
-                border-radius: 12px;
-            }
-
-            .map-floating {
-                right: 16px;
-                top: 16px;
-                gap: 8px;
-            }
-
-            .map-stage {
-                padding: 16px;
-            }
-        }
-
-        /* Floating controls */
-        .map-floating {
-            position: absolute;
-            right: 32px;
-            top: 32px;
-            z-index: 1000;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .glass {
-            backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, .7);
-            border: 1px solid rgba(255, 255, 255, .6);
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
-        }
-
-        .btn-chip {
-            padding: 10px 14px;
-            border: 0;
-            border-radius: 999px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .btn-chip:hover {
-            filter: brightness(.95);
-        }
-
-        .btn-primary-soft {
-            background: #eef4ff;
-            color: #2448ff;
-        }
-
-        .btn-dark-soft {
-            background: #f2f2f2;
-            color: #111;
-        }
-
-        .btn-outline {
-            background: #fff;
-            border: 1px solid #e5e7eb;
-        }
-
-        /* Popup modern */
-        .leaflet-popup-content {
-            margin: 10px 12px;
-        }
-
-        .pop-title {
-            font-weight: 800;
-            font-size: 1.05rem;
-            margin-bottom: 2px;
-        }
-
-        .pop-sub {
-            color: #6b7280;
-            font-size: .9rem;
-            margin-bottom: 6px;
-        }
-
-        .pop-img {
-            width: 100%;
-            border-radius: 12px;
-            margin-top: 6px;
-        }
-
-        .pop-action {
-            display: inline-block;
-            margin-top: 8px;
-        }
-    </style>
 
 </head>
 
